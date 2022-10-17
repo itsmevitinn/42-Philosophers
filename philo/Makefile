@@ -6,7 +6,7 @@ CC = cc
 
 SRC_DIR = ./src/
 
-SRCS = philosophers.c
+SRCS = ft_atoi.c ft_check_atoi.c philosophers.c
 
 FUNCS = $(addprefix $(SRC_DIR), $(SRCS))
 
@@ -19,7 +19,7 @@ $(NAME):	$(FUNCS)
 			@echo "\033[32m 💯 | Philosophers created."
 
 clean: 
-			${RM} ${FUNCS}
+			# ${RM} ${FUNCS}
 
 fclean: 	clean
 			@$(RM) $(NAME)
