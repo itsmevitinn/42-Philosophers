@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/17 15:08:52 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/20 01:47:10 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@
 
 typedef struct	s_philo
 {
-	int id;
-	int	number_of_philo;
-	pthread_t	*philo_th;
+	int			pos;
+	int			eating;
+	// int			counter_philos;
+	pthread_t	philo_th;
 }				t_philo;
 
 long int	ft_atoi(char *str);

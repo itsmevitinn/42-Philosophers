@@ -6,7 +6,7 @@ CC = cc
 
 SRC_DIR = ./src/
 
-SRCS = ft_atoi.c ft_check_atoi.c philosophers.c
+SRCS = ft_atoi.c philosophers.c
 
 FUNCS = $(addprefix $(SRC_DIR), $(SRCS))
 
