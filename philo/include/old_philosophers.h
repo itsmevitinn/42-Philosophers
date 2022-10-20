@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.h                                     :+:      :+:    :+:   */
+/*   old_philosophers.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/20 16:42:11 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/20 17:28:39 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct	s_data
 	int				guests;
 	int				time_to_eat;
 	int				pos;
+	int				*eating;
 }				t_data;
 
 typedef struct	s_philo
@@ -34,6 +35,7 @@ typedef struct	s_philo
 	int				guests;
 	int				time_to_eat;
 	int				pos;
+	int				*eating;
 }				t_philo;
 
 long int	ft_atoi(char *str);
