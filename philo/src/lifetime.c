@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/21 01:28:02 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/21 13:50:01 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,41 @@
 
 void	*lifetime(void *data)
 {
-	t_data	*new_data;
+	t_data			*new_data;
 	long long int	current_time;
 	long long int	starving_time;
-	int			pos;
+	int				i;
 
 	new_data = data;
-	pos = new_data->pos;
-	
 	while(42)
 	{
-		current_time = get_current_time(new_data);
-		printf("philo %i Last meal: %li\n", new_data->pos, new_data->last_meal[pos]);	
-		printf("philo %i Current time: %lli\n", new_data->pos, current_time);
-		starving_time = current_time - new_data->last_meal[pos];
-		if (starving_time > new_data->time_to_eat)
+		i = -1;
+		while(++i < new_data->guests)
 		{
-			printf("Philo %i died\n", new_data->pos);
-			exit(EXIT_FAILURE);
+			if (new_data->last_meal[i] != 0)
+			{
+				current_time = get_current_time(new_data);
+				starving_time = current_time - new_data->last_meal[i];
+				if (starving_time > new_data->time_to_eat)
+				{
+					printf("%lims: %i died\n", get_current_time(new_data), i + 1);
+					printf("%lims: %i last meal\n", new_data->last_meal[i], i + 1);
+					exit(EXIT_FAILURE);
+				}
+			}
 		}
-		printf("philo %i Difference %lli\n", new_data->pos, new_data->last_meal[pos] - current_time);
-		return (NULL);
 	}
+	return (NULL);
 }
 
-long long int	get_current_time(t_data *data)
+long int	get_current_time(t_data *data)
 {
-	long long int	sec_to_micro;
+	long int	sec_to_micro;
+	long int	miliseconds;
 
 	data->time = malloc(sizeof(struct timeval));
 	gettimeofday(data->time, NULL);
 	sec_to_micro = data->time->tv_sec * 1000000;
-	return (sec_to_micro + data->time->tv_usec);
+	miliseconds = (sec_to_micro + data->time->tv_usec) / 1000;
+	return (miliseconds);
 }
