@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/21 13:42:42 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/22 12:12:35 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -39,7 +39,11 @@ void	*routine(void *philo)
 
 		usleep(data.time_to_eat); //tempo para comer
 		printf("%lims: %i is eating\n", get_current_time(&data), data.pos);
+		
+		pthread_mutex_lock(&data.meal_access[data.pos - 1]);
 		data.last_meal[data.pos - 1] = get_current_time(&data); //n precisa de mutex pois nao eh compartilhado com threads
+		pthread_mutex_unlock(&data.meal_access[data.pos - 1]);
+		
 		pthread_mutex_unlock(&data.forks[data.pos - 1]); //libera o garfo a esquerda
 		
 		if (data.pos == data.guests)
@@ -61,10 +65,10 @@ int main(int argc, char **argv)
 	
 	if (argc < 2)
 		perror("Error\n");
-
 	data.guests = ft_atoi(argv[1]);
 	data.time_to_eat = ft_atoi(argv[2]);
 	data.forks = malloc(sizeof(pthread_mutex_t) * data.guests);
+	data.meal_access = malloc(sizeof(pthread_mutex_t) * data.guests);
 	data.last_meal = malloc(sizeof(long int) * data.guests);
 	data.last_meal = memset(data.last_meal, 0, sizeof(long int) * data.guests);
 	data.pos = 0;	
