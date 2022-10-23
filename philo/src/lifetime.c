@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/23 02:30:39 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 02:42:43 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -26,7 +26,7 @@ void	*lifetime(void *data)
 		{
 			if (cast->times_must_eat)
 			{
-				if (cast->meals_eaten[i] == cast->times_must_eat)
+				if (cast->meals_eaten[i] >= cast->times_must_eat)
 				{
 					pthread_mutex_lock(&cast->meal_access[i]);
 					cast->all_eaten++;
