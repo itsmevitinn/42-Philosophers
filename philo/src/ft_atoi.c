@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 08:59:49 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/17 15:01:40 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/23 02:27:29 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -25,16 +25,16 @@ long int	ft_atoi(char *str)
 	if (*str == '-' || *str == '+')
 	{
 		if (*str == '-')
-			sign *= -1;
+			print_exit();
 		str++;
 	}
 	if (!check_atoi_numbers(str))
-		return (2147483650);
+		print_exit();
 	while (*str >= '0' && *str <= '9')
 	{
 		res = res * 10 + *str - '0';
 		if (res > 2147483647 || res < -2147483648)
-			return (2147483650);
+			print_exit();
 		str++;
 	}
 	return (sign * res);
@@ -45,7 +45,7 @@ int	check_atoi_numbers(char *string)
 	char	*temp;
 
 	temp = string;
-	if (*temp == 0)
+	if (*temp == 0 || *temp == '0')
 		return (0);
 	while (*temp)
 	{
@@ -55,4 +55,10 @@ int	check_atoi_numbers(char *string)
 			return (0);
 	}
 	return (1);
+}
+
+void	print_exit(void)
+{
+	printf("Invalid parameters!\nTry something like below\n./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+	exit(1);
 }

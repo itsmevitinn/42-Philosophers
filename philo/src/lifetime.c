@@ -6,17 +6,17 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/23 00:09:59 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 02:30:39 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
 
 void	*lifetime(void *data)
 {
-	t_data			*cast;
+	t_data		*cast;
 	long int	current_time;
 	long int	starving_time;
-	int				i;
+	int			i;
 
 	cast = data;
 	while(42)
@@ -24,15 +24,31 @@ void	*lifetime(void *data)
 		i = -1;
 		while(++i < cast->guests)
 		{
-			if (cast->last_meal[i] != 0)
+			if (cast->times_must_eat)
+			{
+				if (cast->meals_eaten[i] == cast->times_must_eat)
+				{
+					pthread_mutex_lock(&cast->meal_access[i]);
+					cast->all_eaten++;
+					pthread_mutex_unlock(&cast->meal_access[i]);
+				}
+				if (cast->all_eaten == cast->guests)
+				{
+					usleep(cast->time_to_eat);
+					printf("%lims: everyone ate\n", get_current_time());
+					exit(1);
+					// destroy_mutexes(data);
+					// free_all(data);
+				}
+			}
+			if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
 			{
 				pthread_mutex_lock(&cast->meal_access[i]);
-				current_time = get_current_time(cast);
+				current_time = get_current_time();
 				starving_time = current_time - cast->last_meal[i];
-				if (starving_time > cast->time_to_eat)
+				if (starving_time > cast->time_to_die)
 				{
 					printf("%lims: %i died\n", current_time, i + 1);
-					printf("%lims: %i last meal\n", cast->last_meal[i], i + 1);
 					destroy_mutexes(data);
 					free_all(data);
 					exit(EXIT_FAILURE);
@@ -66,14 +82,12 @@ void	destroy_mutexes(t_data *data)
 	}
 }
 
-long int	get_current_time(t_data *data)
+long int	get_current_time()
 {
-	long int	sec_to_micro;
+	struct timeval time;
 	long int	miliseconds;
 
-	data->time = malloc(sizeof(struct timeval));
-	gettimeofday(data->time, NULL);
-	sec_to_micro = data->time->tv_sec * 1000000;
-	miliseconds = (sec_to_micro + data->time->tv_usec) / 1000;
+	gettimeofday(&time, NULL);
+	miliseconds = ((time.tv_sec * 1000) + time.tv_usec / 1000);
 	return (miliseconds);
 }
