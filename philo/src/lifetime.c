@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/22 13:05:05 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/22 23:14:58 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -33,8 +33,8 @@ void	*lifetime(void *data)
 				{
 					printf("%lims: %i died\n", get_current_time(cast), i + 1);
 					printf("%lims: %i last meal\n", cast->last_meal[i], i + 1);
-					free_all(data);
 					destroy_mutexes(data);
+					free_all(data);
 					exit(EXIT_FAILURE);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
@@ -46,9 +46,6 @@ void	*lifetime(void *data)
 
 void	free_all(t_data *data)
 {
-	// int i;
-
-	// i = -1;
 	if (data->forks)
 		free(data->forks);
 	if (data->meal_access)

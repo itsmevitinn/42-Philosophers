@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/22 12:49:55 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/22 23:32:24 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct	s_philo
 {
 	pthread_t			philo_th;
 	t_data				data_control;
-	int					pos;
 }						t_philo;
 
 long int	ft_atoi(char *str);
@@ -44,5 +43,6 @@ long int	get_current_time(t_data *data);
 void		free_all(t_data *data);
 void		*lifetime(void *philo);
 void		destroy_mutexes(t_data *data);
+void		create_data(t_data *data, char **argv);
 
 #endif

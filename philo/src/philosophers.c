@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/22 12:12:35 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/22 23:44:36 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -63,21 +63,15 @@ int main(int argc, char **argv)
 	t_data			data;
 	int				i;
 	
+	philo = NULL;
+	philo = malloc(sizeof(t_philo) * data.guests);
+	create_data(&data, argv);
+	
 	if (argc < 2)
 		perror("Error\n");
-	data.guests = ft_atoi(argv[1]);
-	data.time_to_eat = ft_atoi(argv[2]);
-	data.forks = malloc(sizeof(pthread_mutex_t) * data.guests);
-	data.meal_access = malloc(sizeof(pthread_mutex_t) * data.guests);
-	data.last_meal = malloc(sizeof(long int) * data.guests);
-	data.last_meal = memset(data.last_meal, 0, sizeof(long int) * data.guests);
-	data.pos = 0;	
 
 	if (pthread_create(&killer, NULL, &lifetime, &data) != 0)
 		write(2, "Error2\n", 7);
-
-	philo = NULL;
-	philo = malloc(sizeof(t_philo) * data.guests);
 	
 	i = -1;
 	while(++i < data.guests)
@@ -86,10 +80,10 @@ int main(int argc, char **argv)
 	i = -1;
 	while(++i < data.guests)
 	{
-		data.pos++;
 		philo[i].data_control = data;
 		if (pthread_create(&philo[i].philo_th, NULL, &routine, &philo[i]) != 0) //injeta ID da thread no 1o param
 			write(2, "Error1\n", 7);
+		data.pos++;
 	}
 
 	i = -1;
@@ -102,4 +96,15 @@ int main(int argc, char **argv)
 		pthread_mutex_destroy(&data.forks[i]);
 	
 	return (0);
+}
+
+void	create_data(t_data *data, char **argv)
+{
+	data->guests = ft_atoi(argv[1]);
+	data->time_to_eat = ft_atoi(argv[2]);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->guests);
+	data->meal_access = malloc(sizeof(pthread_mutex_t) * data->guests);
+	data->last_meal = malloc(sizeof(long int) * data->guests);
+	data->last_meal = memset(data->last_meal, 0, sizeof(long int) * data->guests);
+	data->pos = 1;	
 }
