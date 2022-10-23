@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/23 02:01:57 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 02:32:21 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	int				i;
 	
 	if (argc != 5 && argc != 6)
-		perror("Error\n");
+		print_exit();
 	create_data(&data, argv, argc);
 	philo = malloc(sizeof(t_philo) * data.guests);
 	
