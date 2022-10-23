@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/22 23:14:58 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 00:09:59 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -14,8 +14,8 @@
 void	*lifetime(void *data)
 {
 	t_data			*cast;
-	long long int	current_time;
-	long long int	starving_time;
+	long int	current_time;
+	long int	starving_time;
 	int				i;
 
 	cast = data;
@@ -31,7 +31,7 @@ void	*lifetime(void *data)
 				starving_time = current_time - cast->last_meal[i];
 				if (starving_time > cast->time_to_eat)
 				{
-					printf("%lims: %i died\n", get_current_time(cast), i + 1);
+					printf("%lims: %i died\n", current_time, i + 1);
 					printf("%lims: %i last meal\n", cast->last_meal[i], i + 1);
 					destroy_mutexes(data);
 					free_all(data);

@@ -6,53 +6,50 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/22 23:44:36 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 00:13:30 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
 
-void	*routine(void *philo)
+void	*routine(void *data)
 {
-	t_philo		*temp;
-	t_data		data;
+	t_data	*cast;
 
-	temp = philo;
-	data = temp->data_control;
-	
+	cast = data;
 	while(42)
 	{
-		printf("%lims: %i is thinking\n", get_current_time(&data), data.pos);
-		if (data.pos == data.guests) //ultimo filosofo
+		printf("%lims: %i is thinking\n", get_current_time(cast), cast->pos);
+		if (cast->pos == cast->guests) //ultimo filosofo
 		{
-			pthread_mutex_lock(&data.forks[0]); //garfo a direita do ultimo filosofo eh o garfo do primeiro, e tambem deve rodar primeiro pra ficar na fila e evitar deadlock
-			printf("%lims: %i has taken a fork\n", get_current_time(&data), data.pos);
-			pthread_mutex_lock(&data.forks[data.pos - 1]);
-			printf("%lims: %i has taken a fork\n", get_current_time(&data), data.pos);
+			pthread_mutex_lock(&cast->forks[0]); //garfo a direita do ultimo filosofo eh o garfo do primeiro, e tambem deve rodar primeiro pra ficar na fila e evitar deadlock
+			printf("%lims: %i has taken a fork\n", get_current_time(cast), cast->pos);
+			pthread_mutex_lock(&cast->forks[cast->pos - 1]);
+			printf("%lims: %i has taken a fork\n", get_current_time(cast), cast->pos);
 		}
 		else
 		{
-			pthread_mutex_lock(&data.forks[data.pos - 1]);
-			printf("%lims: %i has taken a fork\n", get_current_time(&data), data.pos);
-			pthread_mutex_lock(&data.forks[data.pos]); //garfo a direita do filosofo
-			printf("%lims: %i has taken a fork\n", get_current_time(&data), data.pos);
+			pthread_mutex_lock(&cast->forks[cast->pos - 1]);
+			printf("%lims: %i has taken a fork\n", get_current_time(cast), cast->pos);
+			pthread_mutex_lock(&cast->forks[cast->pos]); //garfo a direita do filosofo
+			printf("%lims: %i has taken a fork\n", get_current_time(cast), cast->pos);
 		}
 
-		usleep(data.time_to_eat); //tempo para comer
-		printf("%lims: %i is eating\n", get_current_time(&data), data.pos);
+		usleep(cast->time_to_eat); //tempo para comer
+		printf("%lims: %i is eating\n", get_current_time(cast), cast->pos);
 		
-		pthread_mutex_lock(&data.meal_access[data.pos - 1]);
-		data.last_meal[data.pos - 1] = get_current_time(&data); //n precisa de mutex pois nao eh compartilhado com threads
-		pthread_mutex_unlock(&data.meal_access[data.pos - 1]);
+		pthread_mutex_lock(&cast->meal_access[cast->pos - 1]);
+		cast->last_meal[cast->pos - 1] = get_current_time(cast); //mutex p/ evitar data race c/ funcao lifetime
+		pthread_mutex_unlock(&cast->meal_access[cast->pos - 1]);
 		
-		pthread_mutex_unlock(&data.forks[data.pos - 1]); //libera o garfo a esquerda
+		pthread_mutex_unlock(&cast->forks[cast->pos - 1]); //libera o garfo a esquerda
 		
-		if (data.pos == data.guests)
-			pthread_mutex_unlock(&data.forks[0]); //libera o garfo a direita
+		if (cast->pos == cast->guests)
+			pthread_mutex_unlock(&cast->forks[0]); //libera o garfo a direita
 		else
-			pthread_mutex_unlock(&data.forks[data.pos]); //libera o garfo a direita
-		printf("%lims: %i is sleeping\n", get_current_time(&data), data.pos);
+			pthread_mutex_unlock(&cast->forks[cast->pos]); //libera o garfo a direita
+		printf("%lims: %i is sleeping\n", get_current_time(cast), cast->pos);
 	}
-	return (0);
+	return (NULL);
 }
 
 int main(int argc, char **argv)
@@ -63,9 +60,8 @@ int main(int argc, char **argv)
 	t_data			data;
 	int				i;
 	
-	philo = NULL;
-	philo = malloc(sizeof(t_philo) * data.guests);
 	create_data(&data, argv);
+	philo = malloc(sizeof(t_philo) * data.guests);
 	
 	if (argc < 2)
 		perror("Error\n");
@@ -81,7 +77,7 @@ int main(int argc, char **argv)
 	while(++i < data.guests)
 	{
 		philo[i].data_control = data;
-		if (pthread_create(&philo[i].philo_th, NULL, &routine, &philo[i]) != 0) //injeta ID da thread no 1o param
+		if (pthread_create(&philo[i].philo_th, NULL, &routine, &philo[i].data_control) != 0)
 			write(2, "Error1\n", 7);
 		data.pos++;
 	}

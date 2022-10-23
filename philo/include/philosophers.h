@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/22 23:32:24 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/22 23:56:02 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ typedef struct	s_data
 	struct timeval		*time;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*meal_access;
+	long int			*last_meal;
 	int					guests;
 	long int			time_to_eat;
-	long int			*last_meal;
+	long int			time_to_die;
 	int					pos;
 }						t_data;
 
