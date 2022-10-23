@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/23 02:42:43 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 03:03:11 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -26,20 +26,18 @@ void	*lifetime(void *data)
 		{
 			if (cast->times_must_eat)
 			{
+				pthread_mutex_lock(&cast->meal_access[i]);
 				if (cast->meals_eaten[i] >= cast->times_must_eat)
-				{
-					pthread_mutex_lock(&cast->meal_access[i]);
 					cast->all_eaten++;
-					pthread_mutex_unlock(&cast->meal_access[i]);
-				}
 				if (cast->all_eaten == cast->guests)
 				{
 					usleep(cast->time_to_eat);
 					printf("%lims: everyone ate\n", get_current_time());
+					destroy_mutexes(data);
+					free_all(data);
 					exit(1);
-					// destroy_mutexes(data);
-					// free_all(data);
 				}
+				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
 			if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
 			{
@@ -51,7 +49,7 @@ void	*lifetime(void *data)
 					printf("%lims: %i died\n", current_time, i + 1);
 					destroy_mutexes(data);
 					free_all(data);
-					exit(EXIT_FAILURE);
+					exit(1);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
