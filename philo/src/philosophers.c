@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/23 02:32:21 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/23 02:38:20 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -107,11 +107,12 @@ void	create_data(t_data *data, char **argv, int argc)
 	data->last_meal = malloc(sizeof(long int) * data->guests);
 	data->last_meal = memset(data->last_meal, 0, sizeof(long int) * data->guests);
 	data->times_must_eat = 0;
-	data->all_eaten = 0;
 	data->pos = 1;
 	if (argc == 6)
 	{
 		data->times_must_eat = ft_atoi(argv[5]);
 		data->meals_eaten = malloc(sizeof(int) * data->guests);
+		data->meals_eaten = memset(data->meals_eaten, 0, sizeof(int) * data->guests);
+		data->all_eaten = 0;
 	}
 }
