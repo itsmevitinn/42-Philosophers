@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/23 01:57:17 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/24 10:08:04 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,31 @@ typedef struct	s_data
 {
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*meal_access;
-	long int			*last_meal;
-	int					guests;
-	int					*meals_eaten;
+	pthread_t			*philo_th;
 	long int			time_to_die;
 	long int			time_to_eat;
 	long int			time_to_sleep;
 	long int			times_must_eat;
+	long int			*last_meal;
+	int					*meals_eaten;
+	int					guests;
 	int					all_eaten;
 	int					pos;
 }						t_data;
 
 typedef struct	s_philo
 {
-	pthread_t			philo_th;
-	t_data				data_control;
-}						t_philo;
+	t_data	data;
+}			t_philo;
 
-long int	ft_atoi(char *str);
-int			check_atoi_numbers(char *string);
 long int	get_current_time(void);
-void		free_all(t_data *data);
-void		*lifetime(void *philo);
+long int	ft_atoi(char *str);
 void		destroy_mutexes(t_data *data);
-void		create_data(t_data *data, char **argv, int argc);
+void		create_content(t_data *content, char **argv, int argc);
+void		detach_threads(t_data *data);
 void		print_exit(void);
+void		*lifetime(void *philo);
+void		free_all(t_data *data);
+int			check_atoi_numbers(char *string);
 
 #endif
