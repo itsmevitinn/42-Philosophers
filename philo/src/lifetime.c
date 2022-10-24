@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/24 10:31:50 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/24 14:42:28 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -29,6 +29,11 @@ void	*lifetime(void *data)
 				pthread_mutex_lock(&cast->meal_access[i]);
 				if (cast->meals_eaten[i] >= cast->times_must_eat)
 					cast->all_eaten++;
+				else
+				{
+					cast->all_eaten = 0;			
+					break;
+				}
 				if (cast->all_eaten == cast->guests)
 				{
 					// usleep(cast->time_to_eat);
@@ -36,7 +41,7 @@ void	*lifetime(void *data)
 					detach_threads(data);
 					destroy_mutexes(data);
 					free_all(data);
-					exit(1);
+					return (NULL);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
@@ -51,7 +56,7 @@ void	*lifetime(void *data)
 					detach_threads(data);
 					destroy_mutexes(data);
 					free_all(data);
-					exit(1);
+					return (NULL);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
