@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/24 10:16:18 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/24 10:31:50 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -42,7 +42,7 @@ void	*lifetime(void *data)
 			}
 			if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
 			{
-				// pthread_mutex_lock(&cast->meal_access[i]);
+				pthread_mutex_lock(&cast->meal_access[i]);
 				current_time = get_current_time();
 				starving_time = current_time - cast->last_meal[i];
 				if (starving_time > cast->time_to_die)
@@ -53,7 +53,7 @@ void	*lifetime(void *data)
 					free_all(data);
 					exit(1);
 				}
-				// pthread_mutex_unlock(&cast->meal_access[i]);
+				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
 		}
 	}
