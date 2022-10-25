@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/24 14:42:28 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/25 12:39:57 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -19,6 +19,8 @@ void	*lifetime(void *data)
 	int			i;
 
 	cast = data;
+	cast->killer_ret = malloc(sizeof(int));
+	*cast->killer_ret = 1; //retorno quando morrer;
 	while(42)
 	{
 		i = -1;
@@ -31,21 +33,17 @@ void	*lifetime(void *data)
 					cast->all_eaten++;
 				else
 				{
-					cast->all_eaten = 0;			
+					cast->all_eaten = 0;		
 					break;
 				}
 				if (cast->all_eaten == cast->guests)
 				{
-					// usleep(cast->time_to_eat);
 					printf("%lims: everyone ate\n", get_current_time());
-					detach_threads(data);
-					destroy_mutexes(data);
-					free_all(data);
-					return (NULL);
+					return ((void *)cast->killer_ret);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
-			if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
+			else if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
 			{
 				pthread_mutex_lock(&cast->meal_access[i]);
 				current_time = get_current_time();
@@ -53,25 +51,13 @@ void	*lifetime(void *data)
 				if (starving_time > cast->time_to_die)
 				{
 					printf("%lims: %i died\n", current_time, i + 1);
-					detach_threads(data);
-					destroy_mutexes(data);
-					free_all(data);
-					return (NULL);
+					return ((void *)cast->killer_ret);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
 			}
 		}
 	}
-	return (NULL);
-}
-
-void	detach_threads(t_data *data)
-{
-	int i;
-
-	i = -1;
-	while(++i < data->guests)
-		pthread_detach(data->philo_th[i]);
+	return (0);
 }
 
 void	free_all(t_data *data)
@@ -82,6 +68,8 @@ void	free_all(t_data *data)
 		free(data->meal_access);
 	if (data->last_meal)
 		free(data->last_meal);
+	if (data->killer_ret)
+		free(data->killer_ret);
 }
 
 void	destroy_mutexes(t_data *data)

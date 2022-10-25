@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/24 10:30:17 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/25 12:50:20 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	t_data		content;
 	pthread_t	killer;
 	int			i;
-	
+
 	if (argc != 5 && argc != 6)
 		print_exit();
 	create_content(&content, argv, argc);
@@ -73,6 +73,8 @@ int main(int argc, char **argv)
 	while(++i < content.guests)
 		pthread_mutex_init(&content.forks[i], NULL);
 
+	// create_philo_threads(&content);
+
 	i = -1;
 	while(++i < content.guests)
 	{
@@ -84,15 +86,35 @@ int main(int argc, char **argv)
 
 	i = -1;
 	while(++i < content.guests)
-		if (pthread_join(content.philo_th[i], NULL) != 0)
+		if (pthread_detach(content.philo_th[i]) != 0)
 			write(2, "Error2\n", 7);
 	
-	i = -1;
-	while(++i < content.guests)
-		pthread_mutex_destroy(&content.forks[i]);
+	if (pthread_join(killer, (void *)content.killer_ret) != 0)
+		write(2, "Error1\n", 7);
+	if (*content.killer_ret == 1)
+	{
+		destroy_mutexes(&content);
+		free_all(&content);
+	}
 	
 	return (0);
 }
+
+// void	create_philo_threads(t_data *content)
+// {
+// 	t_philo *philo;
+// 	int i;
+
+// 	philo = malloc(sizeof(t_philo) * content->guests);
+// 	i = -1;
+// 	while(++i < content->guests)
+// 	{
+// 		philo[i].data = content;
+// 		if (pthread_create(&content->philo_th[i], NULL, &routine, &philo[i].data) != 0)
+// 			write(2, "Error1\n", 7);
+// 		content->pos++;
+// 	}
+// }
 
 void	create_content(t_data *content, char **argv, int argc)
 {
@@ -106,6 +128,7 @@ void	create_content(t_data *content, char **argv, int argc)
 	content->last_meal = memset(content->last_meal, 0, sizeof(long int) * content->guests);
 	content->times_must_eat = 0;
 	content->pos = 1;
+	content->killer_ret = 0;
 	content->philo_th = malloc(sizeof(pthread_t) * content->guests);
 	if (argc == 6)
 	{

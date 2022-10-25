@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/24 10:08:04 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/25 12:50:29 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct	s_data
 	int					guests;
 	int					all_eaten;
 	int					pos;
+	int					*killer_ret;
 }						t_data;
 
 typedef struct	s_philo
@@ -50,5 +51,6 @@ void		print_exit(void);
 void		*lifetime(void *philo);
 void		free_all(t_data *data);
 int			check_atoi_numbers(char *string);
+void		create_philo_threads(t_data *content);
 
 #endif
