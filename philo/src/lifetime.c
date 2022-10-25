@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/25 12:39:57 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/25 18:10:18 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -26,24 +26,7 @@ void	*lifetime(void *data)
 		i = -1;
 		while(++i < cast->guests)
 		{
-			if (cast->times_must_eat)
-			{
-				pthread_mutex_lock(&cast->meal_access[i]);
-				if (cast->meals_eaten[i] >= cast->times_must_eat)
-					cast->all_eaten++;
-				else
-				{
-					cast->all_eaten = 0;		
-					break;
-				}
-				if (cast->all_eaten == cast->guests)
-				{
-					printf("%lims: everyone ate\n", get_current_time());
-					return ((void *)cast->killer_ret);
-				}
-				pthread_mutex_unlock(&cast->meal_access[i]);
-			}
-			else if (cast->last_meal[i] != 0 && cast->times_must_eat == 0)
+			if (cast->last_meal[i] != 0)
 			{
 				pthread_mutex_lock(&cast->meal_access[i]);
 				current_time = get_current_time();
@@ -54,34 +37,27 @@ void	*lifetime(void *data)
 					return ((void *)cast->killer_ret);
 				}
 				pthread_mutex_unlock(&cast->meal_access[i]);
+				if (cast->times_must_eat)
+				{
+					pthread_mutex_lock(&cast->meal_access[i]);
+					if (cast->meals_eaten[i] >= cast->times_must_eat)
+						cast->all_eaten++;
+					else
+					{
+						cast->all_eaten = 0;		
+						break;
+					}
+					if (cast->all_eaten == cast->guests)
+					{
+						printf("%lims: everyone ate\n", get_current_time());
+						return ((void *)cast->killer_ret);
+					}
+					pthread_mutex_unlock(&cast->meal_access[i]);
+				}
 			}
 		}
 	}
 	return (0);
-}
-
-void	free_all(t_data *data)
-{
-	if (data->forks)
-		free(data->forks);
-	if (data->meal_access)
-		free(data->meal_access);
-	if (data->last_meal)
-		free(data->last_meal);
-	if (data->killer_ret)
-		free(data->killer_ret);
-}
-
-void	destroy_mutexes(t_data *data)
-{
-	int i;
-
-	i = -1;
-	while(++i < data->guests)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->meal_access[i]);
-	}
 }
 
 long int	get_current_time()

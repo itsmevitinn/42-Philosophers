@@ -6,122 +6,43 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/25 12:50:20 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/25 18:42:20 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
 
-void	*routine(void *data)
-{
-	t_data	*cast;
-
-	cast = data;
-	while(42)
-	{
-		printf("%lims: %i is thinking\n", get_current_time(), cast->pos);
-		if (cast->pos == cast->guests) //ultimo filosofo
-		{
-			pthread_mutex_lock(&cast->forks[0]); //garfo a direita do ultimo filosofo eh o garfo do primeiro, e tambem deve rodar primeiro pra ficar na fila e evitar deadlock
-			printf("%lims: %i has taken a fork\n", get_current_time(), cast->pos);
-			pthread_mutex_lock(&cast->forks[cast->pos - 1]);
-			printf("%lims: %i has taken a fork\n", get_current_time(), cast->pos);
-		}
-		else
-		{
-			pthread_mutex_lock(&cast->forks[cast->pos - 1]);
-			printf("%lims: %i has taken a fork\n", get_current_time(), cast->pos);
-			pthread_mutex_lock(&cast->forks[cast->pos]); //garfo a direita do filosofo
-			printf("%lims: %i has taken a fork\n", get_current_time(), cast->pos);
-		}
-
-		printf("%lims: %i is eating\n", get_current_time(), cast->pos);
-		pthread_mutex_lock(&cast->meal_access[cast->pos - 1]);
-		cast->last_meal[cast->pos - 1] = get_current_time(); //mutex p/ evitar content race c/ funcao lifetime
-		if (cast->times_must_eat)
-			cast->meals_eaten[cast->pos - 1]++;
-		pthread_mutex_unlock(&cast->meal_access[cast->pos - 1]);
-		usleep(cast->time_to_eat); //tempo para comer
-		
-		pthread_mutex_unlock(&cast->forks[cast->pos - 1]); //libera o garfo a esquerda
-		if (cast->pos == cast->guests)
-			pthread_mutex_unlock(&cast->forks[0]); //libera o garfo do primeiro
-		else
-			pthread_mutex_unlock(&cast->forks[cast->pos]); //libera o garfo a direita
-		
-		printf("%lims: %i is sleeping\n", get_current_time(), cast->pos);
-		usleep(cast->time_to_sleep);
-	}
-	return (NULL);
-}
-
 int main(int argc, char **argv)
 {
-	t_philo		*philo;
 	t_data		content;
 	pthread_t	killer;
-	int			i;
 
 	if (argc != 5 && argc != 6)
-		print_exit();
-	create_content(&content, argv, argc);
-	philo = malloc(sizeof(t_philo) * content.guests);
-
-	if (pthread_create(&killer, NULL, &lifetime, &content) != 0)
-		write(2, "Error2\n", 7);
-	
-	i = -1;
-	while(++i < content.guests)
-		pthread_mutex_init(&content.forks[i], NULL);
-
-	// create_philo_threads(&content);
-
-	i = -1;
-	while(++i < content.guests)
-	{
-		philo[i].data = content;
-		if (pthread_create(&content.philo_th[i], NULL, &routine, &philo[i].data) != 0)
-			write(2, "Error1\n", 7);
-		content.pos++;
-	}
-
-	i = -1;
-	while(++i < content.guests)
-		if (pthread_detach(content.philo_th[i]) != 0)
-			write(2, "Error2\n", 7);
-	
-	if (pthread_join(killer, (void *)content.killer_ret) != 0)
-		write(2, "Error1\n", 7);
-	if (*content.killer_ret == 1)
+		if (!invalid_args())
+			return (0);
+	if (!create_content(&content, argv, argc))
+		return (0);
+	create_killer(&killer, &content);
+	init_mutexes(&content);
+	create_philo_threads(&content);
+	if (check_killer(&killer, &content) == 1)
 	{
 		destroy_mutexes(&content);
 		free_all(&content);
+		return (0);
 	}
-	
+	destroy_mutexes(&content);
+	free_all(&content);
 	return (0);
 }
 
-// void	create_philo_threads(t_data *content)
-// {
-// 	t_philo *philo;
-// 	int i;
-
-// 	philo = malloc(sizeof(t_philo) * content->guests);
-// 	i = -1;
-// 	while(++i < content->guests)
-// 	{
-// 		philo[i].data = content;
-// 		if (pthread_create(&content->philo_th[i], NULL, &routine, &philo[i].data) != 0)
-// 			write(2, "Error1\n", 7);
-// 		content->pos++;
-// 	}
-// }
-
-void	create_content(t_data *content, char **argv, int argc)
+int	create_content(t_data *content, char **argv, int argc)
 {
 	content->guests = ft_atoi(argv[1]);
 	content->time_to_die = ft_atoi(argv[2]);
 	content->time_to_eat = ft_atoi(argv[3]) * 1000;
 	content->time_to_sleep = ft_atoi(argv[4]) * 1000;
+	if (!check_values(content))
+		return (0);
 	content->forks = malloc(sizeof(pthread_mutex_t) * content->guests);
 	content->meal_access = malloc(sizeof(pthread_mutex_t) * content->guests);
 	content->last_meal = malloc(sizeof(long int) * content->guests);
@@ -133,8 +54,64 @@ void	create_content(t_data *content, char **argv, int argc)
 	if (argc == 6)
 	{
 		content->times_must_eat = ft_atoi(argv[5]);
+		if (!check_values(content))
+			return (0);
 		content->meals_eaten = malloc(sizeof(int) * content->guests);
 		content->meals_eaten = memset(content->meals_eaten, 0, sizeof(int) * content->guests);
 		content->all_eaten = 0;
 	}
+	return (1);
+}
+
+int	check_values(t_data *data)
+{
+	if (data->guests == 2147483650)
+		return (invalid_values());
+	else if (data->time_to_die == 2147483650)
+		return (invalid_values());
+	else if (data->time_to_eat == 2147483650)
+		return (invalid_values());
+	else if (data->time_to_sleep == 2147483650)
+		return (invalid_values());
+	else if (data->times_must_eat == 2147483650)
+		return (invalid_values());
+	return (1);
+}
+
+void	create_killer(pthread_t *killer, t_data *content)
+{
+	if (pthread_create(killer, NULL, &lifetime, content) != 0)
+		write(2, "Error2\n", 7);
+}
+
+void	init_mutexes(t_data *content)
+{
+	int i;
+
+	i = -1;
+	while(++i < content->guests)
+		pthread_mutex_init(&content->forks[i], NULL);
+}
+
+void	create_philo_threads(t_data *content)
+{
+	t_philo		*philo;
+	int i;
+
+	philo = malloc(sizeof(t_philo) * content->guests);
+	i = -1;
+	while(++i < content->guests)
+	{
+		philo[i].data = *content;
+		if (pthread_create(&content->philo_th[i], NULL, &dinner, &philo[i].data) != 0)
+			write(2, "Error1\n", 7);
+		content->pos++;
+	}
+}
+
+int	check_killer(pthread_t *killer, t_data *content)
+{
+	if (pthread_join(*killer, (void *)content->killer_ret) != 0)
+		write(2, "Error1\n", 7);
+	return(*content->killer_ret);
 }
