@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/25 18:42:20 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/26 10:01:15 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -39,8 +39,8 @@ int	create_content(t_data *content, char **argv, int argc)
 {
 	content->guests = ft_atoi(argv[1]);
 	content->time_to_die = ft_atoi(argv[2]);
-	content->time_to_eat = ft_atoi(argv[3]) * 1000;
-	content->time_to_sleep = ft_atoi(argv[4]) * 1000;
+	content->time_to_eat = ft_atoi(argv[3]);
+	content->time_to_sleep = ft_atoi(argv[4]);
 	if (!check_values(content))
 		return (0);
 	content->forks = malloc(sizeof(pthread_mutex_t) * content->guests);

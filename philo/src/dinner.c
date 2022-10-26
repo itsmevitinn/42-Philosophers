@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   dinner.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/25 18:14:19 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/26 09:53:21 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -49,7 +49,7 @@ void	take_forks(t_data *data)
 void	sleep_time(t_data *data)
 {
 	printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
-	usleep(data->time_to_sleep);
+	usleep(data->time_to_sleep * 1000);
 }
 
 void	return_forks(t_data *data)
@@ -67,7 +67,7 @@ void	eat(t_data *data)
 	pthread_mutex_lock(&data->meal_access[data->pos - 1]);
 	data->last_meal[data->pos - 1] = get_current_time(); //mutex p/ evitar content race c/ funcao lifetime
 	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
-	usleep(data->time_to_eat); //tempo para comer
+	usleep(data->time_to_eat * 1000); //tempo para comer
 	if (data->times_must_eat)
 		data->meals_eaten[data->pos - 1]++;
 }
