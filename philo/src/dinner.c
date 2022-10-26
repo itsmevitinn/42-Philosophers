@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/26 11:48:38 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/26 17:52:15 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -69,5 +69,9 @@ void	eat(t_data *data)
 	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
 	usleep(data->time_to_eat * 1000);
 	if (data->times_must_eat)
+	{
+		pthread_mutex_lock(&data->meal_access[data->pos - 1]);
 		data->meals[data->pos - 1]++;
+		pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
+	}
 }

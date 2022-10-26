@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/26 11:47:51 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/26 17:28:12 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
