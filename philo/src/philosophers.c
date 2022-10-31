@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 19:45:18 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 20:13:57 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -98,5 +98,4 @@ void	create_philo_threads(t_data *data)
 		pthread_detach(data->philo_th[i]);
 		data->pos++;
 	}
-	free(philo);
 }
