@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 19:22:10 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 19:45:18 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -15,7 +15,7 @@ int	main(int argc, char **argv)
 {
 	pthread_t	killer;
 	t_data		data;
-	data = (t_data){0};
+
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
 			return (0);
@@ -95,6 +95,8 @@ void	create_philo_threads(t_data *data)
 	{
 		philo[i].data = *data;
 		pthread_create(&data->philo_th[i], NULL, &dinner, &philo[i].data);
+		pthread_detach(data->philo_th[i]);
 		data->pos++;
 	}
+	free(philo);
 }

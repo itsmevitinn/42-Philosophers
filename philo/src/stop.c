@@ -6,21 +6,11 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/26 11:18:23 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/31 19:45:55 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
-
-void	detach_threads(t_data *data)
-{
-	int	i;
-
-	i = -1;
-	while (++i < data->guests)
-		if (pthread_detach(data->philo_th[i]) != 0)
-			write(2, "Error2\n", 7);
-}
 
 int	invalid_args(void)
 {
@@ -55,4 +45,6 @@ void	free_all(t_data *data)
 		free(data->meal_access);
 	if (data->lst_meal)
 		free(data->lst_meal);
+	if (data->philo_th)
+		free(data->philo_th);
 }

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/26 17:53:12 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/31 19:44:13 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ long int	ft_atoi(char *str);
 long int	exit_atoi(void);
 void		destroy_mutexes(t_data *data);
 int			create_data(t_data *data, char **argv, int argc);
-void		detach_threads(t_data *data);
 void		*lifetime(void *philo);
 void		free_all(t_data *data);
 void		create_philo_threads(t_data *data);
