@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/26 17:28:12 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/31 19:22:10 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -15,14 +15,14 @@ int	main(int argc, char **argv)
 {
 	pthread_t	killer;
 	t_data		data;
-
+	data = (t_data){0};
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
 			return (0);
 	if (!create_data(&data, argv, argc))
 		return (0);
-	pthread_create(&killer, NULL, &lifetime, &data);
 	init_mutexes(&data);
+	pthread_create(&killer, NULL, &lifetime, &data);
 	create_philo_threads(&data);
 	pthread_join(killer, NULL);
 	destroy_mutexes(&data);
@@ -36,15 +36,15 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
+	data->times_must_eat = 0;
 	if (!check_values(data))
 		return (0);
+	data->philo_th = malloc(sizeof(pthread_t) * data->guests);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->guests);
 	data->meal_access = malloc(sizeof(pthread_mutex_t) * data->guests);
 	data->lst_meal = malloc(sizeof(long int) * data->guests);
 	data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->guests);
-	data->times_must_eat = 0;
 	data->pos = 1;
-	data->philo_th = malloc(sizeof(pthread_t) * data->guests);
 	if (argc == 6)
 	{
 		data->times_must_eat = ft_atoi(argv[5]);
@@ -78,7 +78,10 @@ void	init_mutexes(t_data *data)
 
 	i = -1;
 	while (++i < data->guests)
+	{
 		pthread_mutex_init(&data->forks[i], NULL);
+		pthread_mutex_init(&data->meal_access[i], NULL);
+	}
 }
 
 void	create_philo_threads(t_data *data)
