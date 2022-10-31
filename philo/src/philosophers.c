@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 20:13:57 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 20:34:04 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -39,7 +39,8 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->times_must_eat = 0;
 	if (!check_values(data))
 		return (0);
-	data->philo_th = malloc(sizeof(pthread_t) * data->guests);
+	data->ph_thread = malloc(sizeof(pthread_t) * data->guests);
+	data->ph_data = malloc(sizeof(t_data) * data->guests);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->guests);
 	data->meal_access = malloc(sizeof(pthread_mutex_t) * data->guests);
 	data->lst_meal = malloc(sizeof(long int) * data->guests);
@@ -86,16 +87,14 @@ void	init_mutexes(t_data *data)
 
 void	create_philo_threads(t_data *data)
 {
-	t_philo	*philo;
 	int		i;
 
-	philo = malloc(sizeof(t_philo) * data->guests);
 	i = -1;
 	while (++i < data->guests)
 	{
-		philo[i].data = *data;
-		pthread_create(&data->philo_th[i], NULL, &dinner, &philo[i].data);
-		pthread_detach(data->philo_th[i]);
+		data->ph_data[i] = *data;
+		pthread_create(&data->ph_thread[i], NULL, &dinner, &data->ph_data[i]);
+		pthread_detach(data->ph_thread[i]);
 		data->pos++;
 	}
 }

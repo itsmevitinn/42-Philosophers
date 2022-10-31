@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/31 19:44:13 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 20:33:40 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ typedef struct	s_data
 {
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*meal_access;
-	pthread_t			*philo_th;
+	pthread_t			*ph_thread;
+	struct s_data		*ph_data;
 	long int			guests;
 	long int			time_to_die;
 	long int			time_to_eat;
@@ -35,11 +36,6 @@ typedef struct	s_data
 	int					all_eaten;
 	int					pos;
 }						t_data;
-
-typedef struct	s_philo
-{
-	t_data	data;
-}			t_philo;
 
 long int	get_current_time(void);
 long int	ft_atoi(char *str);

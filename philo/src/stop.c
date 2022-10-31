@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 19:45:55 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 20:34:43 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	free_all(t_data *data)
 		free(data->meal_access);
 	if (data->lst_meal)
 		free(data->lst_meal);
-	if (data->philo_th)
-		free(data->philo_th);
+	if (data->ph_thread)
+		free(data->ph_thread);
+	if (data->ph_data)
+		free(data->ph_data);
 }
