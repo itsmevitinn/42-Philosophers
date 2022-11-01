@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 20:34:04 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/10/31 21:09:26 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -37,6 +37,7 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->times_must_eat = 0;
+	data->meals = 0;
 	if (!check_values(data))
 		return (0);
 	data->ph_thread = malloc(sizeof(pthread_t) * data->guests);
