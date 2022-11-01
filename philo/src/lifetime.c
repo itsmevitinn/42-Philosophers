@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/26 17:52:08 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/10/31 21:46:37 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -61,7 +61,7 @@ int	death_time(t_data *data, int i)
 	pthread_mutex_lock(&data->meal_access[i]);
 	current_time = get_current_time();
 	starving_time = current_time - data->lst_meal[i];
-	if (starving_time > data->time_to_die)
+	if (starving_time >= data->time_to_die)
 	{
 		printf("%lims: %i died\n", current_time, i + 1);
 		return (1);
