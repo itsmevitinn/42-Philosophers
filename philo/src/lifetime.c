@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/31 21:46:37 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 09:41:14 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -40,10 +40,7 @@ int	monitor(t_data *data, int i)
 				else
 					data->all_eaten = 0;
 				if (data->all_eaten == data->guests)
-				{
-					printf("%lims: everyone ate\n", get_current_time());
 					return (0);
-				}
 				pthread_mutex_unlock(&data->meal_access[i]);
 			}
 			if (death_time(data, i))
