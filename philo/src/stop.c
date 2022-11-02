@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 22:00:34 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/02 20:48:59 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	free_all(t_data *data)
 void	print_status(t_data *data, char type, int pos)
 {
 	pthread_mutex_lock(&data->print);
+	pthread_mutex_lock(&data->check_id);
 	if (type == 't')
 		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
 	else if (type == 'f')
@@ -67,5 +68,6 @@ void	print_status(t_data *data, char type, int pos)
 		printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
 	else if (type == 'd')
 		printf("%lims: %i died\n", get_current_time(), pos);
+	pthread_mutex_unlock(&data->check_id);
 	pthread_mutex_unlock(&data->print);
 }

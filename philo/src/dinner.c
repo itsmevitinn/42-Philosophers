@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 22:07:35 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/02 20:47:37 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -32,6 +32,7 @@ void	*dinner(void *cast)
 
 void	take_forks(t_data *data)
 {
+	pthread_mutex_lock(&data->check_id);
 	if (data->pos == data->guests)
 	{
 		pthread_mutex_lock(&data->forks[0]);
@@ -46,6 +47,7 @@ void	take_forks(t_data *data)
 		pthread_mutex_lock(&data->forks[data->pos]);
 		print_status(data, 'f', 0);
 	}
+	pthread_mutex_lock(&data->check_id);
 }
 
 void	sleep_time(t_data *data)
@@ -57,10 +59,12 @@ void	sleep_time(t_data *data)
 void	return_forks(t_data *data)
 {
 	pthread_mutex_unlock(&data->forks[data->pos - 1]);
+	pthread_mutex_lock(&data->check_id);
 	if (data->pos == data->guests)
 		pthread_mutex_unlock(&data->forks[0]);
 	else
 		pthread_mutex_unlock(&data->forks[data->pos]);
+	pthread_mutex_unlock(&data->check_id);
 }
 
 void	eat(t_data *data)
