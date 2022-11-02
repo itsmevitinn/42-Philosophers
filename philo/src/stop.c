@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 21:08:40 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:31:39 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	destroy_mutexes(t_data *data)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
 		pthread_mutex_destroy(&data->meal_access[i]);
+		pthread_mutex_destroy(&data->print);
 	}
 }
 
@@ -51,4 +52,20 @@ void	free_all(t_data *data)
 		free(data->ph_data);
 	if (data->meals)
 		free(data->meals);
+}
+
+void	print_status(t_data *data, char type, int pos)
+{
+	pthread_mutex_lock(&data->print);
+	if (type == 't')	
+		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
+	else if (type == 'f')
+		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+	else if (type == 'e')
+		printf("%lims: %i is eating\n", get_current_time(), data->pos);
+	else if (type == 's')
+		printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
+	else if (type == 'd')
+		printf("%lims: %i died\n", get_current_time(), pos);
+	pthread_mutex_unlock(&data->print);
 }

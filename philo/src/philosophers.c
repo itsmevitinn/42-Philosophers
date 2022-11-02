@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 21:10:29 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:31:23 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -84,6 +84,7 @@ void	init_mutexes(t_data *data)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
 		pthread_mutex_init(&data->meal_access[i], NULL);
+		pthread_mutex_init(&data->print, NULL);
 	}
 }
 

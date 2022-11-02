@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 21:13:10 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:29:35 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -21,7 +21,8 @@ void	*dinner(void *cast)
 	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
 	while (42)
 	{
-		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
+		// printf("%lims: %i is thinking\n", get_current_time(), data->pos);
+		print_status(data, 't', 0);
 		take_forks(data);
 		eat(data);
 		return_forks(data);
@@ -35,22 +36,27 @@ void	take_forks(t_data *data)
 	if (data->pos == data->guests)
 	{
 		pthread_mutex_lock(&data->forks[0]);
-		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+		print_status(data, 'f', 0);
+		// printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
 		pthread_mutex_lock(&data->forks[data->pos - 1]);
-		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+		print_status(data, 'f', 0);
+		// printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
 	}
 	else
 	{
 		pthread_mutex_lock(&data->forks[data->pos - 1]);
-		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+		print_status(data, 'f', 0);
+		// printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
 		pthread_mutex_lock(&data->forks[data->pos]);
-		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+		print_status(data, 'f', 0);
+		// printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
 	}
 }
 
 void	sleep_time(t_data *data)
 {
-	printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
+	// printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
+	print_status(data, 's', 0);
 	usleep(data->time_to_sleep * 1000);
 }
 
@@ -65,7 +71,8 @@ void	return_forks(t_data *data)
 
 void	eat(t_data *data)
 {
-	printf("%lims: %i is eating\n", get_current_time(), data->pos);
+	// printf("%lims: %i is eating\n", get_current_time(), data->pos);
+	print_status(data, 'e', 0);
 	pthread_mutex_lock(&data->meal_access[data->pos - 1]);
 	data->lst_meal[data->pos - 1] = get_current_time();
 	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);

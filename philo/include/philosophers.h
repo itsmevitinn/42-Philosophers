@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/10/31 21:45:49 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:28:45 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct s_data
 {
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*meal_access;
+	pthread_mutex_t		print;
 	pthread_t			*ph_thread;
 	struct s_data		*ph_data;
 	long int			guests;
@@ -42,6 +43,7 @@ long int	ft_atoi(char *str);
 long int	exit_atoi(void);
 void		destroy_mutexes(t_data *data);
 int			create_data(t_data *data, char **argv, int argc);
+void		print_status(t_data *data, char type, int pos);
 void		*lifetime(void *philo);
 void		free_all(t_data *data);
 void		create_philo_threads(t_data *data);
