@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 21:59:46 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 22:07:35 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -21,11 +21,11 @@ void	*dinner(void *cast)
 	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
 	while (42)
 	{
-		print_status(data, 't', 0);
 		take_forks(data);
 		eat(data);
 		return_forks(data);
 		sleep_time(data);
+		print_status(data, 't', 0);
 	}
 	return (NULL);
 }
