@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/01 21:31:39 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 22:00:34 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	free_all(t_data *data)
 void	print_status(t_data *data, char type, int pos)
 {
 	pthread_mutex_lock(&data->print);
-	if (type == 't')	
+	if (type == 't')
 		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
 	else if (type == 'f')
 		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
