@@ -19,7 +19,8 @@ $(NAME):	$(FUNCS)
 			@echo "\033[32m 💯 | Philosophers created."
 
 clean: 
-			# ${RM} ${FUNCS}
+			@${RM} ${NAME}.dSYM
+			@echo "\033[33m 🧹  | Philosophers cleaned."
 
 fclean: 	clean
 			@$(RM) $(NAME)

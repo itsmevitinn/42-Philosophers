@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/31 21:09:26 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:10:29 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -20,7 +20,10 @@ int	main(int argc, char **argv)
 		if (!invalid_args())
 			return (0);
 	if (!create_data(&data, argv, argc))
+	{
+		free_all(&data);
 		return (0);
+	}
 	init_mutexes(&data);
 	pthread_create(&killer, NULL, &lifetime, &data);
 	create_philo_threads(&data);
@@ -38,8 +41,6 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->times_must_eat = 0;
 	data->meals = 0;
-	if (!check_values(data))
-		return (0);
 	data->ph_thread = malloc(sizeof(pthread_t) * data->guests);
 	data->ph_data = malloc(sizeof(t_data) * data->guests);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->guests);
@@ -50,12 +51,12 @@ int	create_data(t_data *data, char **argv, int argc)
 	if (argc == 6)
 	{
 		data->times_must_eat = ft_atoi(argv[5]);
-		if (!check_values(data))
-			return (0);
 		data->meals = malloc(sizeof(int) * data->guests);
 		data->meals = memset(data->meals, 0, sizeof(int) * data->guests);
 		data->all_eaten = 0;
 	}
+	if (!check_values(data))
+		return (0);
 	return (1);
 }
 

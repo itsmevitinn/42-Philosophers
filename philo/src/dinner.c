@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/10/26 17:52:15 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/01 21:13:10 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -16,7 +16,9 @@ void	*dinner(void *cast)
 	t_data	*data;
 
 	data = cast;
+	pthread_mutex_lock(&data->meal_access[data->pos - 1]);
 	data->lst_meal[data->pos - 1] = get_current_time();
+	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
 	while (42)
 	{
 		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
