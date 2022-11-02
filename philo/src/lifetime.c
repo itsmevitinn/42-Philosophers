@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/01 21:48:20 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/01 21:57:44 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -31,22 +31,18 @@ int	monitor(t_data *data, int i)
 	while (++i < data->guests)
 	{
 		pthread_mutex_lock(&data->meal_access[i]);
-		if (data->lst_meal[i] != 0)
+		if (data->times_must_eat)
 		{
-			if (data->times_must_eat)
-			{
-				if (data->meals[i] >= data->times_must_eat)
-					data->all_eaten++;
-				else
-					data->all_eaten = 0;
-				if (data->all_eaten >= data->guests)
-					return (0);
-			}
-			pthread_mutex_unlock(&data->meal_access[i]);
-			if (death_time(data, i))
+			if (data->meals[i] >= data->times_must_eat)
+				data->all_eaten++;
+			else
+				data->all_eaten = 0;
+			if (data->all_eaten >= data->guests)
 				return (0);
 		}
 		pthread_mutex_unlock(&data->meal_access[i]);
+		if (death_time(data, i))
+			return (0);
 	}
 	return (1);
 }
@@ -59,7 +55,7 @@ int	death_time(t_data *data, int i)
 	pthread_mutex_lock(&data->meal_access[i]);
 	current_time = get_current_time();
 	starving_time = current_time - data->lst_meal[i];
-	if (starving_time >= data->time_to_die)
+	if (starving_time >= data->time_to_die && data->lst_meal[i] != 0)
 	{
 		print_status(data, 'd', i + 1);
 		return (1);
