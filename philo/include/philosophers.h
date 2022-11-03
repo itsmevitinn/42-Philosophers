@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/02 21:01:01 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 17:38:44 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/time.h>
+
+typedef struct s_global
+{
+	int *end;
+}				t_global;
 
 typedef struct s_data
 {
@@ -35,7 +40,7 @@ typedef struct s_data
 	long int			*lst_meal;
 	int					*meals;
 	int					all_eaten;
-	int					pos;
+	int					id;
 }						t_data;
 
 long int	get_current_time(void);

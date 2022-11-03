@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/02 21:00:34 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 17:42:22 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ void	print_status(t_data *data, char type, int pos)
 {
 	pthread_mutex_lock(&data->print);
 	if (type == 't')
-		printf("%lims: %i is thinking\n", get_current_time(), data->pos);
+		printf("%lims: %i is thinking\n", get_current_time(), data->id);
 	else if (type == 'f')
-		printf("%lims: %i has taken a fork\n", get_current_time(), data->pos);
+		printf("%lims: %i has taken a fork\n", get_current_time(), data->id);
 	else if (type == 'e')
-		printf("%lims: %i is eating\n", get_current_time(), data->pos);
+		printf("%lims: %i is eating\n", get_current_time(), data->id);
 	else if (type == 's')
-		printf("%lims: %i is sleeping\n", get_current_time(), data->pos);
+		printf("%lims: %i is sleeping\n", get_current_time(), data->id);
 	else if (type == 'd')
 		printf("%lims: %i died\n", get_current_time(), pos);
 	pthread_mutex_unlock(&data->print);

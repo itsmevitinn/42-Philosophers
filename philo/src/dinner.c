@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/02 21:00:28 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 17:44:52 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -16,9 +16,9 @@ void	*dinner(void *cast)
 	t_data	*data;
 
 	data = cast;
-	pthread_mutex_lock(&data->meal_access[data->pos - 1]);
-	data->lst_meal[data->pos - 1] = get_current_time();
-	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
+	pthread_mutex_lock(&data->meal_access[data->id]);
+	data->lst_meal[data->id] = get_current_time();
+	pthread_mutex_unlock(&data->meal_access[data->id]);
 	while (42)
 	{
 		take_forks(data);
@@ -32,18 +32,18 @@ void	*dinner(void *cast)
 
 void	take_forks(t_data *data)
 {
-	if (data->pos == data->guests)
+	if (data->id + 1 == data->guests)
 	{
 		pthread_mutex_lock(&data->forks[0]);
 		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->forks[data->pos - 1]);
+		pthread_mutex_lock(&data->forks[data->id]);
 		print_status(data, 'f', 0);
 	}
 	else
 	{
-		pthread_mutex_lock(&data->forks[data->pos - 1]);
+		pthread_mutex_lock(&data->forks[data->id]);
 		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->forks[data->pos]);
+		pthread_mutex_lock(&data->forks[data->id + 1]);
 		print_status(data, 'f', 0);
 	}
 }
@@ -56,24 +56,24 @@ void	sleep_time(t_data *data)
 
 void	return_forks(t_data *data)
 {
-	pthread_mutex_unlock(&data->forks[data->pos - 1]);
-	if (data->pos == data->guests)
+	pthread_mutex_unlock(&data->forks[data->id]);
+	if (data->id + 1 == data->guests)
 		pthread_mutex_unlock(&data->forks[0]);
 	else
-		pthread_mutex_unlock(&data->forks[data->pos]);
+		pthread_mutex_unlock(&data->forks[data->id + 1]);
 }
 
 void	eat(t_data *data)
 {
 	print_status(data, 'e', 0);
-	pthread_mutex_lock(&data->meal_access[data->pos - 1]);
-	data->lst_meal[data->pos - 1] = get_current_time();
-	pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
+	pthread_mutex_lock(&data->meal_access[data->id]);
+	data->lst_meal[data->id] = get_current_time();
+	pthread_mutex_unlock(&data->meal_access[data->id]);
 	usleep(data->time_to_eat * 1000);
 	if (data->times_must_eat)
 	{
-		pthread_mutex_lock(&data->meal_access[data->pos - 1]);
-		data->meals[data->pos - 1]++;
-		pthread_mutex_unlock(&data->meal_access[data->pos - 1]);
+		pthread_mutex_lock(&data->meal_access[data->id]);
+		data->meals[data->id]++;
+		pthread_mutex_unlock(&data->meal_access[data->id]);
 	}
 }

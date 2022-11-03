@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/02 21:26:14 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 17:43:40 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -47,7 +47,7 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->meal_access = malloc(sizeof(pthread_mutex_t) * data->guests);
 	data->lst_meal = malloc(sizeof(long int) * data->guests);
 	data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->guests);
-	data->pos = 1;
+	data->id = 0;
 	if (argc == 6)
 	{
 		data->times_must_eat = ft_atoi(argv[5]);
@@ -98,6 +98,6 @@ void	create_philo_threads(t_data *data)
 		data->ph_data[i] = *data;
 		pthread_create(&data->ph_thread[i], NULL, &dinner, &data->ph_data[i]);
 		pthread_detach(data->ph_thread[i]);
-		data->pos++;
+		data->id++;
 	}
 }
