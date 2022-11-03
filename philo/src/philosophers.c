@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/02 21:17:51 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/02 21:23:04 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 	pthread_create(&killer, NULL, &lifetime, &data);
 	create_philo_threads(&data);
 	pthread_join(killer, NULL);
-	destroy_mutexes(&data);
+	// destroy_mutexes(&data);
 	free_all(&data);
 	return (0);
 }
