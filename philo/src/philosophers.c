@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 17:43:40 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/03 18:01:43 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -19,21 +19,41 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
 			return (0);
-	if (!create_data(&data, argv, argc))
+	if (!create_data(&data, argv, argc, start_global()))
 	{
 		free_all(&data);
 		return (0);
 	}
 	init_mutexes(&data);
 	pthread_create(&killer, NULL, &lifetime, &data);
+	pthread_detach(killer);
 	create_philo_threads(&data);
-	pthread_join(killer, NULL);
+	// pthread_join(killer, NULL);
+	join_philos(&data);
 	// destroy_mutexes(&data);
-	free_all(&data);
+	// free_all(&data);
 	return (0);
 }
 
-int	create_data(t_data *data, char **argv, int argc)
+void	join_philos(t_data *data)
+{
+	int i;
+
+	i = -1;
+	while(++i < data->guests)
+		pthread_join(data->ph_thread[i], NULL);
+}
+
+t_global	*start_global()
+{
+	t_global *global;
+	global = malloc(sizeof(t_global));
+
+	global->end = 0;
+	return (global);
+}
+
+int	create_data(t_data *data, char **argv, int argc, t_global *global)
 {
 	data->guests = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
@@ -41,6 +61,7 @@ int	create_data(t_data *data, char **argv, int argc)
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->times_must_eat = 0;
 	data->meals = 0;
+	data->global = global;
 	data->ph_thread = malloc(sizeof(pthread_t) * data->guests);
 	data->ph_data = malloc(sizeof(t_data) * data->guests);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->guests);
@@ -97,7 +118,7 @@ void	create_philo_threads(t_data *data)
 	{
 		data->ph_data[i] = *data;
 		pthread_create(&data->ph_thread[i], NULL, &dinner, &data->ph_data[i]);
-		pthread_detach(data->ph_thread[i]);
+		// pthread_detach(data->ph_thread[i]);
 		data->id++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 17:38:44 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/03 18:11:42 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 
 typedef struct s_global
 {
-	int *end;
+	pthread_mutex_t finish;
+	int end;
 }				t_global;
 
 typedef struct s_data
@@ -31,6 +32,7 @@ typedef struct s_data
 	pthread_mutex_t		*meal_access;
 	pthread_mutex_t		print;
 	pthread_t			*ph_thread;
+	t_global			*global;
 	struct s_data		*ph_data;
 	long int			guests;
 	long int			time_to_die;
@@ -47,15 +49,15 @@ long int	get_current_time(void);
 long int	ft_atoi(char *str);
 long int	exit_atoi(void);
 void		destroy_mutexes(t_data *data);
-int			create_data(t_data *data, char **argv, int argc);
+int			create_data(t_data *data, char **argv, int argc, t_global *global);
 void		print_status(t_data *data, char type, int pos);
 void		*lifetime(void *philo);
 void		free_all(t_data *data);
 void		create_philo_threads(t_data *data);
 void		init_mutexes(t_data *data);
-void		eat(t_data *data);
+int			eat(t_data *data);
 void		return_forks(t_data *data);
-void		sleep_time(t_data *data);
+int			sleep_time(t_data *data);
 void		take_forks(t_data *data);
 void		*dinner(void *data);
 int			check_values(t_data *data);
@@ -64,5 +66,8 @@ int			invalid_values(void);
 int			check_atoi_numbers(char *string);
 int			death_time(t_data *data, int i);
 int			monitor(t_data *data, int i);
+t_global	*start_global();
+void	join_philos(t_data *data);
+int			smart_check(long int timer, t_data *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/02 16:50:37 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 18:05:57 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -38,7 +38,13 @@ int	monitor(t_data *data, int i)
 			else
 				data->all_eaten = 0;
 			if (data->all_eaten >= data->guests)
+			{
+				pthread_mutex_lock(&data->global->finish);
+				data->global->end = 1;
+				pthread_mutex_unlock(&data->global->finish);
+				printf("Valor end killer: %i\n", data->global->end);
 				return (0);
+			}
 			pthread_mutex_unlock(&data->meal_access[i]);
 		}
 		if (death_time(data, i))
@@ -57,7 +63,11 @@ int	death_time(t_data *data, int i)
 	starving_time = current_time - data->lst_meal[i];
 	if (starving_time >= data->time_to_die && data->lst_meal[i] != 0)
 	{
-		print_status(data, 'd', i + 1);
+		print_status(data, 'd', i);
+		pthread_mutex_lock(&data->global->finish);
+		data->global->end = 1;
+		pthread_mutex_unlock(&data->global->finish);
+		printf("Valor end: %i\n", data->global->end);
 		return (1);
 	}
 	pthread_mutex_unlock(&data->meal_access[i]);
