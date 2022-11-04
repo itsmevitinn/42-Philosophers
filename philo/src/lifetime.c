@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 23:15:35 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/04 00:36:12 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -19,14 +19,17 @@ void	*lifetime(void *data)
 	cast = data;
 	while (42)
 	{
-		i = -1;
-		if (!monitor(cast, i))
+		pthread_mutex_lock(&cast->global->finish);
+		if (cast->global->end)
 			return (NULL);
+		pthread_mutex_unlock(&cast->global->finish);
+		i = -1;
+		monitor(cast, i);
 	}
 	return (NULL);
 }
 
-int	monitor(t_data *data, int i)
+void	monitor(t_data *data, int i)
 {
 	while (++i < data->global->guests)
 	{
@@ -42,18 +45,14 @@ int	monitor(t_data *data, int i)
 				pthread_mutex_lock(&data->global->finish);
 				data->global->end = 1;
 				pthread_mutex_unlock(&data->global->finish);
-				printf("Valor end killer: %i\n", data->global->end);
-				return (0);
 			}
 			pthread_mutex_unlock(&data->global->meal_access[i]);
 		}
-		if (death_time(data, i))
-			return (0);
+		death_time(data, i);
 	}
-	return (1);
 }
 
-int	death_time(t_data *data, int i)
+void	death_time(t_data *data, int i)
 {
 	long int	current_time;
 	long int	starving_time;
@@ -67,10 +66,8 @@ int	death_time(t_data *data, int i)
 		pthread_mutex_lock(&data->global->finish);
 		data->global->end = 1;
 		pthread_mutex_unlock(&data->global->finish);
-		return (1);
 	}
 	pthread_mutex_unlock(&data->global->meal_access[i]);
-	return (0);
 }
 
 long int	get_current_time(void)

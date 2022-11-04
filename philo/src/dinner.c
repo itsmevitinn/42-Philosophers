@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 23:45:43 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/04 00:30:19 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -29,7 +29,8 @@ void	*dinner(void *cast)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&data->global->finish);
-		take_forks(data);
+		if (!take_forks(data))
+			return (0);
 		if (!eat(data))
 			return (0);
 		return_forks(data);
@@ -39,20 +40,23 @@ void	*dinner(void *cast)
 	return (NULL);
 }
 
-void	take_forks(t_data *data)
+int	take_forks(t_data *data)
 {
 	int handled;
 
 	handled = 0;
-	printf("valor %i\n", data->global->forks[0]);
 	while(handled < 2)
 	{
+		if (!smart_check(data->time_to_eat, data))
+		{
+			printf("philo %i parou pois alguem morreu\n", data->id);
+			return (0);
+		}
 		if (data->id + 1 == data->global->guests)
 		{
 			pthread_mutex_lock(&data->global->m_forks[0]);
 			if (!data->global->forks[0])
 			{
-				printf("mutex 2\n");
 				print_status(data, 'f', 0);
 				handled++;
 				data->global->forks[0] = 1;
@@ -73,7 +77,6 @@ void	take_forks(t_data *data)
 			pthread_mutex_lock(&data->global->m_forks[data->id]);
 			if (!data->global->forks[data->id])
 			{
-				printf("mutex\n");
 				print_status(data, 'f', 0);
 				handled++;
 				data->global->forks[data->id] = 1;
@@ -91,6 +94,7 @@ void	take_forks(t_data *data)
 			pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
 		}
 	}
+	return (1);
 }
 
 int	sleep_time(t_data *data)
@@ -150,7 +154,6 @@ int	smart_check(long int timer, t_data *data)
 		pthread_mutex_lock(&data->global->finish);
 		if (data->global->end)
 		{
-			printf("algum philo morreu\n");
 			pthread_mutex_unlock(&data->global->finish);
 			return (0);
 		}

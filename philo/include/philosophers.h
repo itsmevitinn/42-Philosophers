@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 23:27:24 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/04 00:38:57 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct s_data
 	long int			time_to_eat;
 	long int			time_to_sleep;
 	long int			times_must_eat;
-	// long int			*lst_meal;
 	int					*meals;
 	int					all_eaten;
 	int					id;
@@ -51,26 +50,26 @@ typedef struct s_data
 long int	get_current_time(void);
 long int	ft_atoi(char *str);
 long int	exit_atoi(void);
-void		destroy_mutexes(t_data *data);
-int			create_data(t_data *data, char **argv, int argc, t_global *global);
 void		print_status(t_data *data, char type, int pos);
-void		*lifetime(void *philo);
-void		free_all(t_data *data);
+int			create_data(t_data *data, char **argv, int argc, t_global *global);
 void		create_philo_threads(t_data *data);
-void		init_mutexes(t_data *data);
+void		*lifetime(void *philo);
+void		death_time(t_data *data, int i);
+void		monitor(t_data *data, int i);
+void		start_global(t_global *global, char **argv);
+void		join_philos(t_data *data);
+void		*dinner(void *data);
+int			take_forks(t_data *data);
 int			eat(t_data *data);
 void		return_forks(t_data *data);
 int			sleep_time(t_data *data);
-void		take_forks(t_data *data);
-void		*dinner(void *data);
-int			check_values(t_data *data);
+int			smart_check(long int timer, t_data *data);
+void		free_all(t_data *data);
+void		init_mutexes(t_data *data);
+void		destroy_mutexes(t_data *data);
 int			invalid_args(void);
 int			invalid_values(void);
+int			check_values(t_data *data);
 int			check_atoi_numbers(char *string);
-int			death_time(t_data *data, int i);
-int			monitor(t_data *data, int i);
-void		start_global(t_global *global, char **argv);
-void		join_philos(t_data *data);
-int			smart_check(long int timer, t_data *data);
 
 #endif
