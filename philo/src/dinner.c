@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 23:24:34 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:45:43 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -41,19 +41,55 @@ void	*dinner(void *cast)
 
 void	take_forks(t_data *data)
 {
-	if (data->id + 1 == data->global->guests)
+	int handled;
+
+	handled = 0;
+	printf("valor %i\n", data->global->forks[0]);
+	while(handled < 2)
 	{
-		pthread_mutex_lock(&data->global->m_forks[0]);
-		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->global->m_forks[data->id]);
-		print_status(data, 'f', 0);
-	}
-	else
-	{
-		pthread_mutex_lock(&data->global->m_forks[data->id]);
-		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->global->m_forks[data->id + 1]);
-		print_status(data, 'f', 0);
+		if (data->id + 1 == data->global->guests)
+		{
+			pthread_mutex_lock(&data->global->m_forks[0]);
+			if (!data->global->forks[0])
+			{
+				printf("mutex 2\n");
+				print_status(data, 'f', 0);
+				handled++;
+				data->global->forks[0] = 1;
+			}
+			pthread_mutex_unlock(&data->global->m_forks[0]);
+			
+			pthread_mutex_lock(&data->global->m_forks[data->id]);
+			if (!data->global->forks[data->id])
+			{
+				print_status(data, 'f', 0);
+				handled++;
+				data->global->forks[data->id] = 1;
+			}
+			pthread_mutex_unlock(&data->global->m_forks[data->id]);
+		}
+		else
+		{
+			pthread_mutex_lock(&data->global->m_forks[data->id]);
+			if (!data->global->forks[data->id])
+			{
+				printf("mutex\n");
+				print_status(data, 'f', 0);
+				handled++;
+				data->global->forks[data->id] = 1;
+			}
+			pthread_mutex_unlock(&data->global->m_forks[data->id]);
+			
+			pthread_mutex_lock(&data->global->m_forks[data->id + 1]);
+			if (!data->global->forks[data->id + 1])
+			{
+				print_status(data, 'f', 0);
+				handled++;
+				data->global->forks[data->id + 1] = 1;
+			}
+			
+			pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
+		}
 	}
 }
 
@@ -70,11 +106,21 @@ int	sleep_time(t_data *data)
 
 void	return_forks(t_data *data)
 {
+	pthread_mutex_lock(&data->global->m_forks[data->id]);
+	data->global->forks[data->id] = 0;
 	pthread_mutex_unlock(&data->global->m_forks[data->id]);
 	if (data->id + 1 == data->global->guests)
+	{
+		pthread_mutex_lock(&data->global->m_forks[0]);
+		data->global->forks[0] = 0;
 		pthread_mutex_unlock(&data->global->m_forks[0]);
+	}
 	else
+	{
+		pthread_mutex_lock(&data->global->m_forks[data->id + 1]);
+		data->global->forks[data->id + 1] = 0;
 		pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
+	}
 }
 
 int	eat(t_data *data)
