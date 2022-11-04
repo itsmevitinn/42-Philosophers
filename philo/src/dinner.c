@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/04 00:30:19 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/04 00:40:44 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -47,7 +47,7 @@ int	take_forks(t_data *data)
 	handled = 0;
 	while(handled < 2)
 	{
-		if (!smart_check(data->time_to_eat, data))
+		if (!smart_check(data->time_to_eat, data)) //CONSERTAR O VALOR DE INPUT DO SMART_CHECK
 		{
 			printf("philo %i parou pois alguem morreu\n", data->id);
 			return (0);
