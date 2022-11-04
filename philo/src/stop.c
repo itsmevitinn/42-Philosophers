@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 22:49:50 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 22:57:09 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	destroy_mutexes(t_data *data)
 	while (++i < data->global->guests)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->meal_access[i]);
+		pthread_mutex_destroy(&data->global->meal_access[i]);
 	}
 	pthread_mutex_destroy(&data->print);
 }
@@ -42,8 +42,8 @@ void	free_all(t_data *data)
 {
 	if (data->forks)
 		free(data->forks);
-	if (data->meal_access)
-		free(data->meal_access);
+	if (data->global->meal_access)
+		free(data->global->meal_access);
 	if (data->lst_meal)
 		free(data->lst_meal);
 	if (data->ph_thread)

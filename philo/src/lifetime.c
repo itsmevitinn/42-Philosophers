@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 22:49:07 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 22:55:15 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -32,7 +32,7 @@ int	monitor(t_data *data, int i)
 	{
 		if (data->times_must_eat)
 		{
-			pthread_mutex_lock(&data->meal_access[i]);
+			pthread_mutex_lock(&data->global->meal_access[i]);
 			if (data->meals[i] >= data->times_must_eat)
 				data->all_eaten++;
 			else
@@ -45,7 +45,7 @@ int	monitor(t_data *data, int i)
 				printf("Valor end killer: %i\n", data->global->end);
 				return (0);
 			}
-			pthread_mutex_unlock(&data->meal_access[i]);
+			pthread_mutex_unlock(&data->global->meal_access[i]);
 		}
 		if (death_time(data, i))
 			return (0);
@@ -58,7 +58,7 @@ int	death_time(t_data *data, int i)
 	long int	current_time;
 	long int	starving_time;
 
-	pthread_mutex_lock(&data->meal_access[i]);
+	pthread_mutex_lock(&data->global->meal_access[i]);
 	current_time = get_current_time();
 	starving_time = current_time - data->lst_meal[i];
 	if (starving_time >= data->time_to_die && data->lst_meal[i] != 0)
@@ -70,7 +70,7 @@ int	death_time(t_data *data, int i)
 		printf("Valor end: %i\n", data->global->end);
 		return (1);
 	}
-	pthread_mutex_unlock(&data->meal_access[i]);
+	pthread_mutex_unlock(&data->global->meal_access[i]);
 	return (0);
 }
 

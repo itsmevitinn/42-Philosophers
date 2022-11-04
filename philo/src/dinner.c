@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 22:49:26 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 22:55:54 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -16,9 +16,9 @@ void	*dinner(void *cast)
 	t_data	*data;
 
 	data = cast;
-	pthread_mutex_lock(&data->meal_access[data->id]);
+	pthread_mutex_lock(&data->global->meal_access[data->id]);
 	data->lst_meal[data->id] = get_current_time();
-	pthread_mutex_unlock(&data->meal_access[data->id]);
+	pthread_mutex_unlock(&data->global->meal_access[data->id]);
 	while (42)
 	{
 		pthread_mutex_lock(&data->global->finish);
@@ -85,14 +85,14 @@ int	eat(t_data *data)
 		printf("philo %i parou pois alguem morreu\n", data->id);
 		return (0);
 	}
-	pthread_mutex_lock(&data->meal_access[data->id]);
+	pthread_mutex_lock(&data->global->meal_access[data->id]);
 	data->lst_meal[data->id] = get_current_time();
-	pthread_mutex_unlock(&data->meal_access[data->id]);
+	pthread_mutex_unlock(&data->global->meal_access[data->id]);
 	if (data->times_must_eat)
 	{
-		pthread_mutex_lock(&data->meal_access[data->id]);
+		pthread_mutex_lock(&data->global->meal_access[data->id]);
 		data->meals[data->id]++;
-		pthread_mutex_unlock(&data->meal_access[data->id]);
+		pthread_mutex_unlock(&data->global->meal_access[data->id]);
 	}
 	return (1);
 }

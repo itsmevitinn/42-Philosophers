@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 22:51:40 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 22:57:31 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -37,21 +37,11 @@ int	main(int argc, char **argv)
 	return (0);
 }
 
-void	join_philos(t_data *data)
-{
-	int i;
-
-	i = -1;
-	while(++i < data->global->guests)
-		pthread_join(data->ph_thread[i], NULL);
-}
-
 void	start_global(t_global *global, char **argv)
 {
-	// global = malloc(sizeof(t_global));
-
 	global->guests = ft_atoi(argv[1]);
 	global->end = 0;
+	global->meal_access = malloc(sizeof(pthread_mutex_t) * global->guests);
 }
 
 int	create_data(t_data *data, char **argv, int argc, t_global *global)
@@ -66,7 +56,7 @@ int	create_data(t_data *data, char **argv, int argc, t_global *global)
 	data->ph_thread = malloc(sizeof(pthread_t) * data->global->guests);
 	data->ph_data = malloc(sizeof(t_data) * data->global->guests);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->global->guests);
-	data->meal_access = malloc(sizeof(pthread_mutex_t) * data->global->guests);
+	// data->meal_access = malloc(sizeof(pthread_mutex_t) * data->global->guests);
 	data->lst_meal = malloc(sizeof(long int) * data->global->guests);
 	data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->global->guests);
 	data->id = 0;
@@ -105,7 +95,7 @@ void	init_mutexes(t_data *data)
 	while (++i < data->global->guests)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
-		pthread_mutex_init(&data->meal_access[i], NULL);
+		pthread_mutex_init(&data->global->meal_access[i], NULL);
 	}
 	pthread_mutex_init(&data->print, NULL);
 }
@@ -122,4 +112,13 @@ void	create_philo_threads(t_data *data)
 		// pthread_detach(data->ph_thread[i]);
 		data->id++;
 	}
+}
+
+void	join_philos(t_data *data)
+{
+	int i;
+
+	i = -1;
+	while(++i < data->global->guests)
+		pthread_join(data->ph_thread[i], NULL);
 }
