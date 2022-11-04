@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 18:11:42 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/03 22:51:23 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 typedef struct s_global
 {
 	pthread_mutex_t finish;
+	long int			guests;
 	int end;
 }				t_global;
 
@@ -34,7 +35,7 @@ typedef struct s_data
 	pthread_t			*ph_thread;
 	t_global			*global;
 	struct s_data		*ph_data;
-	long int			guests;
+	// long int			guests;
 	long int			time_to_die;
 	long int			time_to_eat;
 	long int			time_to_sleep;
@@ -66,7 +67,7 @@ int			invalid_values(void);
 int			check_atoi_numbers(char *string);
 int			death_time(t_data *data, int i);
 int			monitor(t_data *data, int i);
-t_global	*start_global();
+void	start_global(t_global *global, char **argv);
 void	join_philos(t_data *data);
 int			smart_check(long int timer, t_data *data);
 

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 18:05:57 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/03 22:49:07 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -28,7 +28,7 @@ void	*lifetime(void *data)
 
 int	monitor(t_data *data, int i)
 {
-	while (++i < data->guests)
+	while (++i < data->global->guests)
 	{
 		if (data->times_must_eat)
 		{
@@ -37,7 +37,7 @@ int	monitor(t_data *data, int i)
 				data->all_eaten++;
 			else
 				data->all_eaten = 0;
-			if (data->all_eaten >= data->guests)
+			if (data->all_eaten >= data->global->guests)
 			{
 				pthread_mutex_lock(&data->global->finish);
 				data->global->end = 1;
