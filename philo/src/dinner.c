@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 22:55:54 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:06:31 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -43,16 +43,16 @@ void	take_forks(t_data *data)
 {
 	if (data->id + 1 == data->global->guests)
 	{
-		pthread_mutex_lock(&data->forks[0]);
+		pthread_mutex_lock(&data->global->m_forks[0]);
 		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->forks[data->id]);
+		pthread_mutex_lock(&data->global->m_forks[data->id]);
 		print_status(data, 'f', 0);
 	}
 	else
 	{
-		pthread_mutex_lock(&data->forks[data->id]);
+		pthread_mutex_lock(&data->global->m_forks[data->id]);
 		print_status(data, 'f', 0);
-		pthread_mutex_lock(&data->forks[data->id + 1]);
+		pthread_mutex_lock(&data->global->m_forks[data->id + 1]);
 		print_status(data, 'f', 0);
 	}
 }
@@ -70,11 +70,11 @@ int	sleep_time(t_data *data)
 
 void	return_forks(t_data *data)
 {
-	pthread_mutex_unlock(&data->forks[data->id]);
+	pthread_mutex_unlock(&data->global->m_forks[data->id]);
 	if (data->id + 1 == data->global->guests)
-		pthread_mutex_unlock(&data->forks[0]);
+		pthread_mutex_unlock(&data->global->m_forks[0]);
 	else
-		pthread_mutex_unlock(&data->forks[data->id + 1]);
+		pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
 }
 
 int	eat(t_data *data)

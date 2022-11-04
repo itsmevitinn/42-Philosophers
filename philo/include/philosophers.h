@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 22:54:49 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:11:43 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,18 @@ typedef struct s_global
 {
 	pthread_mutex_t		finish;
 	pthread_mutex_t		*meal_access;
+	pthread_mutex_t		*m_forks;
 	long int			guests;
-	int end;
+	int					all_eaten;
+	int					end;
 }				t_global;
 
 typedef struct s_data
 {
-	pthread_mutex_t		*forks;
-	// pthread_mutex_t		*meal_access;
+	t_global			*global;
 	pthread_mutex_t		print;
 	pthread_t			*ph_thread;
-	t_global			*global;
 	struct s_data		*ph_data;
-	// long int			guests;
 	long int			time_to_die;
 	long int			time_to_eat;
 	long int			time_to_sleep;
