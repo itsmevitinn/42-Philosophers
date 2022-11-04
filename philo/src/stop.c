@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 23:07:48 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:27:52 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	destroy_mutexes(t_data *data)
 		pthread_mutex_destroy(&data->global->m_forks[i]);
 		pthread_mutex_destroy(&data->global->meal_access[i]);
 	}
-	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->global->print);
 }
 
 void	free_all(t_data *data)
@@ -44,8 +44,8 @@ void	free_all(t_data *data)
 		free(data->global->m_forks);
 	if (data->global->meal_access)
 		free(data->global->meal_access);
-	if (data->lst_meal)
-		free(data->lst_meal);
+	if (data->global->lst_meal)
+		free(data->global->lst_meal);
 	if (data->ph_thread)
 		free(data->ph_thread);
 	if (data->ph_data)
@@ -56,7 +56,7 @@ void	free_all(t_data *data)
 
 void	print_status(t_data *data, char type, int pos)
 {
-	pthread_mutex_lock(&data->print);
+	pthread_mutex_lock(&data->global->print);
 	pthread_mutex_lock(&data->global->finish);
 	if (!data->global->end)
 	{
@@ -72,5 +72,5 @@ void	print_status(t_data *data, char type, int pos)
 			printf("%lims: %i died\n", get_current_time(), pos);
 	}
 	pthread_mutex_unlock(&data->global->finish);
-	pthread_mutex_unlock(&data->print);
+	pthread_mutex_unlock(&data->global->print);
 }

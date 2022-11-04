@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/03 23:08:56 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:15:35 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -60,14 +60,13 @@ int	death_time(t_data *data, int i)
 
 	pthread_mutex_lock(&data->global->meal_access[i]);
 	current_time = get_current_time();
-	starving_time = current_time - data->lst_meal[i];
-	if (starving_time >= data->time_to_die && data->lst_meal[i] != 0)
+	starving_time = current_time - data->global->lst_meal[i];
+	if (starving_time >= data->time_to_die && data->global->lst_meal[i] != 0)
 	{
 		print_status(data, 'd', i);
 		pthread_mutex_lock(&data->global->finish);
 		data->global->end = 1;
 		pthread_mutex_unlock(&data->global->finish);
-		printf("Valor end: %i\n", data->global->end);
 		return (1);
 	}
 	pthread_mutex_unlock(&data->global->meal_access[i]);

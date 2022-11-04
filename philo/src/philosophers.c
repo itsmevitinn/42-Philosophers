@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/03 23:11:35 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/03 23:27:27 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -43,6 +43,8 @@ void	start_global(t_global *global, char **argv)
 	global->end = 0;
 	global->meal_access = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->m_forks = malloc(sizeof(pthread_mutex_t) * global->guests);
+	global->lst_meal = malloc(sizeof(long int) * global->guests);
+	global->lst_meal = memset(global->lst_meal, 0, sizeof(long int) * global->guests);
 }
 
 int	create_data(t_data *data, char **argv, int argc, t_global *global)
@@ -56,8 +58,8 @@ int	create_data(t_data *data, char **argv, int argc, t_global *global)
 	data->global = global;
 	data->ph_thread = malloc(sizeof(pthread_t) * data->global->guests);
 	data->ph_data = malloc(sizeof(t_data) * data->global->guests);
-	data->lst_meal = malloc(sizeof(long int) * data->global->guests);
-	data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->global->guests);
+	// data->lst_meal = malloc(sizeof(long int) * data->global->guests);
+	// data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->global->guests);
 	data->id = 0;
 	if (argc == 6)
 	{
@@ -96,7 +98,7 @@ void	init_mutexes(t_data *data)
 		pthread_mutex_init(&data->global->m_forks[i], NULL);
 		pthread_mutex_init(&data->global->meal_access[i], NULL);
 	}
-	pthread_mutex_init(&data->print, NULL);
+	pthread_mutex_init(&data->global->print, NULL);
 }
 
 void	create_philo_threads(t_data *data)
