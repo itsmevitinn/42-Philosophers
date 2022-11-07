@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 16:03:23 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 17:08:51 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -25,7 +25,6 @@ void	*dinner(void *cast)
 		pthread_mutex_lock(&data->global->finish);
 		if (data->global->end == 1)
 		{
-			printf("philo %i morreu enquanto pensava\n", data->id);
 			pthread_mutex_unlock(&data->global->finish);
 			return (NULL);
 		}
@@ -51,7 +50,6 @@ int	take_forks(t_data *data)
 		pthread_mutex_lock(&data->global->finish);
 		if (data->global->end)
 		{
-			printf("philo %i parou pois alguem morreu\n", data->id);
 			pthread_mutex_unlock(&data->global->finish);
 			return (0);
 		}
@@ -104,10 +102,7 @@ int	sleep_time(t_data *data)
 {
 	print_status(data, 's', 0);
 	if (!smart_usleep(data->time_to_eat, data))
-	{
-		printf("philo %i parou pois alguem morreu\n", data->id);
 		return (0);
-	}
 	return (1);
 }
 
@@ -141,10 +136,7 @@ int	eat(t_data *data)
 	}
 	pthread_mutex_unlock(&data->global->meal_access[data->id]);
 	if (!smart_usleep(data->time_to_eat, data))
-	{
-		printf("philo %i parou pois alguem morreu\n", data->id);
 		return (0);
-	}
 	return (1);
 }
 
