@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 17:06:56 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 18:23:16 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,38 +55,38 @@ void	destroy_mutexes(t_data *data)
 	}
 }
 
-void	free_all(t_data *data)
+void	free_all(t_philo *philos, t_data *data)
 {
+	if (philos->threads)
+		free(philos->threads);
+	if (philos->data)
+		free(philos->data);
 	if (data->global->m_forks)
 		free(data->global->m_forks);
 	if (data->global->meal_access)
 		free(data->global->meal_access);
 	if (data->global->lst_meal)
 		free(data->global->lst_meal);
-	if (data->ph_thread)
-		free(data->ph_thread);
-	if (data->ph_data)
-		free(data->ph_data);
-	if (data->meals)
-		free(data->meals);
+	if (data->global->meals)
+		free(data->global->meals);
 }
 
-void	print_status(t_data *data, char type, int pos)
+void	print_status(t_data *data, char type, int id)
 {
 	pthread_mutex_lock(&data->global->print);
 	pthread_mutex_lock(&data->global->finish);
 	if (!data->global->end)
 	{
 		if (type == 't')
-			printf("%lims: %i is thinking\n", get_current_time(), data->id);
+			printf("%lims: %i is thinking\n", get_current_time(), id);
 		else if (type == 'f')
-			printf("%lims: %i has taken a fork\n", get_current_time(), data->id);
+			printf("%lims: %i has taken a fork\n", get_current_time(), id);
 		else if (type == 'e')
-			printf("%lims: %i is eating\n", get_current_time(), data->id);
+			printf("%lims: %i is eating\n", get_current_time(), id);
 		else if (type == 's')
-			printf("%lims: %i is sleeping\n", get_current_time(), data->id);
+			printf("%lims: %i is sleeping\n", get_current_time(), id);
 		else if (type == 'd')
-			printf("%lims: %i died\n", get_current_time(), pos);
+			printf("%lims: %i died\n", get_current_time(), id);
 	}
 	pthread_mutex_unlock(&data->global->finish);
 	pthread_mutex_unlock(&data->global->print);

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/07 16:05:45 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 18:29:36 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -34,16 +34,19 @@ void	*lifetime(void *data)
 
 void	monitor(t_data *data, int i)
 {
+	int	all_eaten;
+
+	all_eaten = 0;
 	while (++i < data->global->guests)
 	{
 		if (data->times_must_eat)
 		{
 			pthread_mutex_lock(&data->global->meal_access[i]);
-			if (data->meals[i] >= data->times_must_eat)
-				data->all_eaten++;
+			if (data->global->meals[i] == data->times_must_eat)
+				all_eaten++;
 			else
-				data->all_eaten = 0;
-			if (data->all_eaten >= data->global->guests)
+				all_eaten = 0;
+			if (all_eaten >= data->global->guests)
 			{
 				pthread_mutex_lock(&data->global->finish);
 				data->global->end = 1;
@@ -57,12 +60,10 @@ void	monitor(t_data *data, int i)
 
 void	death_time(t_data *data, int i)
 {
-	long int	current_time;
 	long int	starving_time;
 
 	pthread_mutex_lock(&data->global->meal_access[i]);
-	current_time = get_current_time();
-	starving_time = current_time - data->global->lst_meal[i];
+	starving_time = get_current_time() - data->global->lst_meal[i];
 	if (starving_time >= data->time_to_die && data->global->lst_meal[i] != 0)
 	{
 		print_status(data, 'd', i);

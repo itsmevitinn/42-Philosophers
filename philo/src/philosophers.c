@@ -6,37 +6,38 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 17:03:49 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 18:30:01 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
 
 int	main(int argc, char **argv)
 {
-	pthread_t	killer;
 	t_global	global;
 	t_data		data;
+	pthread_t	killer;
+	t_philo		philos;
 
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
 			return (0);
-	start_global(&global, argv);
-	if (!create_data(&data, argv, argc, &global))
+	global_data(&global, argc, argv);
+	if (!private_data(&data, argc, argv, &global))
 	{
-		free_all(&data);
+		free_all(&philos, &data);
 		return (0);
 	}
 	init_mutexes(&data);
 	pthread_create(&killer, NULL, &lifetime, &data);
 	pthread_detach(killer);
-	create_philo_threads(&data);
-	join_philos(&data);
+	start_philos(&philos, &data);
+	join_philos(&philos, &data);
 	destroy_mutexes(&data);
-	free_all(&data);
+	free_all(&philos, &data);
 	return (0);
 }
 
-void	start_global(t_global *global, char **argv)
+void	global_data(t_global *global, int argc, char **argv)
 {
 	global->guests = ft_atoi(argv[1]);
 	global->end = 0;
@@ -44,26 +45,25 @@ void	start_global(t_global *global, char **argv)
 	global->m_forks = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->forks = malloc(sizeof(int) * global->guests);
 	global->lst_meal = malloc(sizeof(long int) * global->guests);
+	global->lst_meal = memset(global->lst_meal, 0, sizeof(long int) * global->guests);
+	global->meals = 0;
+	if (argc == 6)
+	{
+		global->meals = malloc(sizeof(int) * global->guests);
+		global->meals = memset(global->meals, 0, sizeof(int) * global->guests);
+	}
 }
 
-int	create_data(t_data *data, char **argv, int argc, t_global *global)
+int	private_data(t_data *data, int argc, char **argv, t_global *global)
 {
+	data->id = 0;
+	data->global = global;
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->times_must_eat = 0;
-	data->meals = 0;
-	data->global = global;
-	data->ph_thread = malloc(sizeof(pthread_t) * data->global->guests);
-	data->ph_data = malloc(sizeof(t_data) * data->global->guests);
-	data->id = 0;
 	if (argc == 6)
-	{
 		data->times_must_eat = ft_atoi(argv[5]);
-		data->meals = malloc(sizeof(int) * data->global->guests);
-		data->meals = memset(data->meals, 0, sizeof(int) * data->global->guests);
-		data->all_eaten = 0;
-	}
 	if (!check_values(data))
 		return (0);
 	return (1);
@@ -89,33 +89,35 @@ void	init_mutexes(t_data *data)
 	int	i;
 
 	i = -1;
+	pthread_mutex_init(&data->global->print, NULL);
+	pthread_mutex_init(&data->global->finish, NULL);
 	while (++i < data->global->guests)
 	{
 		pthread_mutex_init(&data->global->m_forks[i], NULL);
 		pthread_mutex_init(&data->global->meal_access[i], NULL);
 	}
-	pthread_mutex_init(&data->global->print, NULL);
-	pthread_mutex_init(&data->global->finish, NULL);
 }
 
-void	create_philo_threads(t_data *data)
+void	start_philos(t_philo *philos, t_data *data)
 {
 	int		i;
 
 	i = -1;
+	philos->threads = malloc(sizeof(pthread_t) * data->global->guests);
+	philos->data = malloc(sizeof(t_data) * data->global->guests);
 	while (++i < data->global->guests)
 	{
-		data->ph_data[i] = *data;
-		pthread_create(&data->ph_thread[i], NULL, &dinner, &data->ph_data[i]);
+		philos->data[i] = *data;
+		pthread_create(&philos->threads[i], NULL, &dinner, &philos->data[i]);
 		data->id++;
 	}
 }
 
-void	join_philos(t_data *data)
+void	join_philos(t_philo *philos, t_data *data)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(++i < data->global->guests)
-		pthread_join(data->ph_thread[i], NULL);
+	while (++i < data->global->guests)
+		pthread_join(philos->threads[i], NULL);
 }
