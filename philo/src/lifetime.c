@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/04 00:36:12 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/07 16:05:45 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -21,7 +21,10 @@ void	*lifetime(void *data)
 	{
 		pthread_mutex_lock(&cast->global->finish);
 		if (cast->global->end)
+		{
+			pthread_mutex_unlock(&cast->global->finish);
 			return (NULL);
+		}
 		pthread_mutex_unlock(&cast->global->finish);
 		i = -1;
 		monitor(cast, i);

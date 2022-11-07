@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 14:59:11 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 16:02:48 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -14,8 +14,8 @@
 int	main(int argc, char **argv)
 {
 	pthread_t	killer;
-	t_data		data;
 	t_global	global;
+	t_data		data;
 
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
@@ -43,9 +43,7 @@ void	start_global(t_global *global, char **argv)
 	global->meal_access = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->m_forks = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->forks = malloc(sizeof(int) * global->guests);
-	// global->forks = memset(global->forks, 1, sizeof(int) * global->guests);
 	global->lst_meal = malloc(sizeof(long int) * global->guests);
-	// global->lst_meal = memset(global->lst_meal, 0, sizeof(long int) * global->guests);
 }
 
 int	create_data(t_data *data, char **argv, int argc, t_global *global)
@@ -97,6 +95,7 @@ void	init_mutexes(t_data *data)
 		pthread_mutex_init(&data->global->meal_access[i], NULL);
 	}
 	pthread_mutex_init(&data->global->print, NULL);
+	pthread_mutex_init(&data->global->finish, NULL);
 }
 
 void	create_philo_threads(t_data *data)
@@ -108,7 +107,6 @@ void	create_philo_threads(t_data *data)
 	{
 		data->ph_data[i] = *data;
 		pthread_create(&data->ph_thread[i], NULL, &dinner, &data->ph_data[i]);
-		// pthread_detach(data->ph_thread[i]);
 		data->id++;
 	}
 }

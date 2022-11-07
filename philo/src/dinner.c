@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 15:48:29 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 16:03:23 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -26,6 +26,7 @@ void	*dinner(void *cast)
 		if (data->global->end == 1)
 		{
 			printf("philo %i morreu enquanto pensava\n", data->id);
+			pthread_mutex_unlock(&data->global->finish);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&data->global->finish);
@@ -51,6 +52,7 @@ int	take_forks(t_data *data)
 		if (data->global->end)
 		{
 			printf("philo %i parou pois alguem morreu\n", data->id);
+			pthread_mutex_unlock(&data->global->finish);
 			return (0);
 		}
 		pthread_mutex_unlock(&data->global->finish);
