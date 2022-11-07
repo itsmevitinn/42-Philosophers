@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/04 00:38:57 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/07 15:28:05 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int			take_forks(t_data *data);
 int			eat(t_data *data);
 void		return_forks(t_data *data);
 int			sleep_time(t_data *data);
-int			smart_check(long int timer, t_data *data);
+int			smart_usleep(long int timer, t_data *data);
 void		free_all(t_data *data);
 void		init_mutexes(t_data *data);
 void		destroy_mutexes(t_data *data);

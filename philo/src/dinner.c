@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/04 00:40:44 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/07 15:48:29 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -47,11 +47,13 @@ int	take_forks(t_data *data)
 	handled = 0;
 	while(handled < 2)
 	{
-		if (!smart_check(data->time_to_eat, data)) //CONSERTAR O VALOR DE INPUT DO SMART_CHECK
+		pthread_mutex_lock(&data->global->finish);
+		if (data->global->end)
 		{
 			printf("philo %i parou pois alguem morreu\n", data->id);
 			return (0);
 		}
+		pthread_mutex_unlock(&data->global->finish);
 		if (data->id + 1 == data->global->guests)
 		{
 			pthread_mutex_lock(&data->global->m_forks[0]);
@@ -90,7 +92,6 @@ int	take_forks(t_data *data)
 				handled++;
 				data->global->forks[data->id + 1] = 1;
 			}
-			
 			pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
 		}
 	}
@@ -100,7 +101,7 @@ int	take_forks(t_data *data)
 int	sleep_time(t_data *data)
 {
 	print_status(data, 's', 0);
-	if (!smart_check(data->time_to_eat, data))
+	if (!smart_usleep(data->time_to_eat, data))
 	{
 		printf("philo %i parou pois alguem morreu\n", data->id);
 		return (0);
@@ -130,11 +131,6 @@ void	return_forks(t_data *data)
 int	eat(t_data *data)
 {
 	print_status(data, 'e', 0);
-	if (!smart_check(data->time_to_eat, data))
-	{
-		printf("philo %i parou pois alguem morreu\n", data->id);
-		return (0);
-	}
 	pthread_mutex_lock(&data->global->meal_access[data->id]);
 	data->global->lst_meal[data->id] = get_current_time();
 	if (data->times_must_eat)
@@ -142,13 +138,21 @@ int	eat(t_data *data)
 		data->meals[data->id]++;
 	}
 	pthread_mutex_unlock(&data->global->meal_access[data->id]);
+	if (!smart_usleep(data->time_to_eat, data))
+	{
+		printf("philo %i parou pois alguem morreu\n", data->id);
+		return (0);
+	}
 	return (1);
 }
 
-int	smart_check(long int timer, t_data *data)
+int	smart_usleep(long int timer, t_data *data)
 {
+	long int start;
 	long int end;
-	end = get_current_time() + timer;
+
+	start = get_current_time();
+	end = start + timer;
 	while (end >= get_current_time())
 	{
 		pthread_mutex_lock(&data->global->finish);

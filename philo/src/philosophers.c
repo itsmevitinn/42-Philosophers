@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/04 00:32:11 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/07 14:59:11 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -50,7 +50,6 @@ void	start_global(t_global *global, char **argv)
 
 int	create_data(t_data *data, char **argv, int argc, t_global *global)
 {
-	// data->guests = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
@@ -59,8 +58,6 @@ int	create_data(t_data *data, char **argv, int argc, t_global *global)
 	data->global = global;
 	data->ph_thread = malloc(sizeof(pthread_t) * data->global->guests);
 	data->ph_data = malloc(sizeof(t_data) * data->global->guests);
-	// data->lst_meal = malloc(sizeof(long int) * data->global->guests);
-	// data->lst_meal = memset(data->lst_meal, 0, sizeof(long int) * data->global->guests);
 	data->id = 0;
 	if (argc == 6)
 	{
