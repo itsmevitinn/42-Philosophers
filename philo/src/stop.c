@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 18:23:16 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/07 18:38:06 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	destroy_mutexes(t_data *data)
 		pthread_mutex_destroy(&data->global->m_forks[i]);
 		pthread_mutex_destroy(&data->global->meal_access[i]);
 	}
+	printf("mutexes destroyeds\n");
 }
 
 void	free_all(t_philo *philos, t_data *data)

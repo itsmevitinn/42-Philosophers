@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 18:30:01 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 09:35:39 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -32,6 +32,7 @@ int	main(int argc, char **argv)
 	pthread_detach(killer);
 	start_philos(&philos, &data);
 	join_philos(&philos, &data);
+	usleep(1000); //wait untill all threads end
 	destroy_mutexes(&data);
 	free_all(&philos, &data);
 	return (0);
@@ -119,5 +120,8 @@ void	join_philos(t_philo *philos, t_data *data)
 
 	i = -1;
 	while (++i < data->global->guests)
+	{
 		pthread_join(philos->threads[i], NULL);
+		printf("philo ended\n");
+	}
 }
