@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/08 09:35:39 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 17:46:15 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -45,6 +45,7 @@ void	global_data(t_global *global, int argc, char **argv)
 	global->meal_access = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->m_forks = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->forks = malloc(sizeof(int) * global->guests);
+	global->forks = memset(global->forks, 0, sizeof(int) * global->guests);
 	global->lst_meal = malloc(sizeof(long int) * global->guests);
 	global->lst_meal = memset(global->lst_meal, 0, sizeof(long int) * global->guests);
 	global->meals = 0;

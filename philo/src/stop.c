@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/07 18:38:06 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 17:44:38 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	free_all(t_philo *philos, t_data *data)
 		free(philos->data);
 	if (data->global->m_forks)
 		free(data->global->m_forks);
+	if (data->global->forks)
+		free(data->global->forks);
 	if (data->global->meal_access)
 		free(data->global->meal_access);
 	if (data->global->lst_meal)
