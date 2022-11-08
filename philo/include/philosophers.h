@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/07 18:07:32 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 18:04:17 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void		return_forks(t_data *data);
 int			sleep_time(t_data *data);
 int			smart_usleep(long int timer, t_data *data);
 void		free_all(t_philo *philos, t_data *data);
+void		free_data(t_data *data);
 void		destroy_mutexes(t_data *data);
 
 #endif

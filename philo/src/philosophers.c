@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/08 17:53:42 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 18:04:50 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -18,15 +18,13 @@ int	main(int argc, char **argv)
 	pthread_t	killer;
 	t_philo		philos;
 
-	philos.threads = NULL;
-	philos.data = NULL;
 	if (argc != 5 && argc != 6)
 		if (!invalid_args())
 			return (0);
 	global_data(&global, argc, argv);
 	if (!private_data(&data, argc, argv, &global))
 	{
-		free_all(&philos, &data);
+		free_data(&data);
 		return (0);
 	}
 	init_mutexes(&data);
@@ -35,7 +33,7 @@ int	main(int argc, char **argv)
 	start_philos(&philos, &data);
 	join_philos(&philos, &data);
 	usleep(1000); //wait untill all threads end
-	// destroy_mutexes(&data);
+	destroy_mutexes(&data);
 	free_all(&philos, &data);
 	return (0);
 }
@@ -106,9 +104,9 @@ void	start_philos(t_philo *philos, t_data *data)
 {
 	int		i;
 
-	i = -1;
 	philos->threads = malloc(sizeof(pthread_t) * data->global->guests);
 	philos->data = malloc(sizeof(t_data) * data->global->guests);
+	i = -1;
 	while (++i < data->global->guests)
 	{
 		philos->data[i] = *data;
