@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/08 18:04:50 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/08 18:23:42 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -23,17 +23,15 @@ int	main(int argc, char **argv)
 			return (0);
 	global_data(&global, argc, argv);
 	if (!private_data(&data, argc, argv, &global))
-	{
-		free_data(&data);
 		return (0);
-	}
 	init_mutexes(&data);
 	pthread_create(&killer, NULL, &lifetime, &data);
 	pthread_detach(killer);
 	start_philos(&philos, &data);
 	join_philos(&philos, &data);
-	usleep(1000); //wait untill all threads end
-	destroy_mutexes(&data);
+	//wait untill all threads end
+	usleep(1000);
+	// destroy_mutexes(&data);
 	free_all(&philos, &data);
 	return (0);
 }
@@ -67,7 +65,10 @@ int	private_data(t_data *data, int argc, char **argv, t_global *global)
 	if (argc == 6)
 		data->times_must_eat = ft_atoi(argv[5]);
 	if (!check_values(data))
+	{
+		free_data(data);
 		return (0);
+	}
 	return (1);
 }
 
@@ -121,8 +122,5 @@ void	join_philos(t_philo *philos, t_data *data)
 
 	i = -1;
 	while (++i < data->global->guests)
-	{
 		pthread_join(philos->threads[i], NULL);
-		printf("philo ended\n");
-	}
 }
