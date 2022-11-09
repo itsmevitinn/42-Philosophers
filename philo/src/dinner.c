@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/09 12:40:10 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/09 12:49:58 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -27,7 +27,7 @@ void	*dinner(void *cast)
 		pthread_mutex_lock(&data->global->finish);
 		if (data->global->end == 1)
 		{
-			// pthread_mutex_unlock(&data->global->finish);
+			pthread_mutex_unlock(&data->global->finish);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&data->global->finish);
