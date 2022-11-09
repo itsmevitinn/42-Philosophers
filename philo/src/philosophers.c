@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/09 12:35:15 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/09 16:55:57 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -29,8 +29,6 @@ int	main(int argc, char **argv)
 	pthread_detach(killer);
 	start_philos(&philos, &data);
 	join_philos(&philos, &data);
-	//wait untill all threads end
-	usleep(1000);
 	destroy_mutexes(&data);
 	free_all(&philos, &data);
 	return (0);
