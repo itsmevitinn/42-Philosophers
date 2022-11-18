@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 14:17:36 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/17 15:23:18 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/17 21:14:52 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -19,7 +19,7 @@ int	main(int argc, char **argv)
 	t_philo		philos;
 
 	if (argc != 5 && argc != 6)
-		if (!invalid_args())
+		if (!invalid_args('q'))
 			return (0);
 	global_data(&global, argc, argv);
 	if (!private_data(&data, argc, argv, &global))
@@ -40,21 +40,17 @@ void	global_data(t_global *global, int argc, char **argv)
 	global->end = 0;
 	global->meal_access = malloc(sizeof(pthread_mutex_t) * global->guests);
 	global->m_forks = malloc(sizeof(pthread_mutex_t) * global->guests);
-	global->forks = malloc(sizeof(int) * global->guests);
-	global->forks = memset(global->forks, 0, sizeof(int) * global->guests);
-	global->lst_meal = malloc(sizeof(long int) * global->guests);
-	global->lst_meal = memset(global->lst_meal, 0, sizeof(long int) * global->guests);
+	global->forks = calloc(sizeof(int), global->guests);
+	global->lst_meal = calloc(sizeof(long int), global->guests);
 	global->meals = 0;
 	if (argc == 6)
-	{
-		global->meals = malloc(sizeof(int) * global->guests);
-		global->meals = memset(global->meals, 0, sizeof(int) * global->guests);
-	}
+		global->meals = calloc(sizeof(int), global->guests);
 }
 
 int	private_data(t_data *data, int argc, char **argv, t_global *global)
 {
 	data->id = 0;
+	data->next_fork = 1;
 	data->global = global;
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
@@ -70,35 +66,6 @@ int	private_data(t_data *data, int argc, char **argv, t_global *global)
 	return (1);
 }
 
-int	check_values(t_data *data)
-{
-	if (data->global->guests == 2147483650)
-		return (invalid_values());
-	else if (data->time_to_die == 2147483650)
-		return (invalid_values());
-	else if (data->time_to_eat == 2147483650)
-		return (invalid_values());
-	else if (data->time_to_sleep == 2147483650)
-		return (invalid_values());
-	else if (data->times_must_eat == 2147483650)
-		return (invalid_values());
-	return (1);
-}
-
-void	init_mutexes(t_data *data)
-{
-	int	i;
-
-	i = -1;
-	pthread_mutex_init(&data->global->print, NULL);
-	pthread_mutex_init(&data->global->finish, NULL);
-	while (++i < data->global->guests)
-	{
-		pthread_mutex_init(&data->global->m_forks[i], NULL);
-		pthread_mutex_init(&data->global->meal_access[i], NULL);
-	}
-}
-
 void	start_philos(t_philo *philos, t_data *data)
 {
 	int		i;
@@ -111,6 +78,7 @@ void	start_philos(t_philo *philos, t_data *data)
 		philos->data[i] = *data;
 		pthread_create(&philos->threads[i], NULL, &dinner, &philos->data[i]);
 		data->id++;
+		data->next_fork++;
 	}
 }
 

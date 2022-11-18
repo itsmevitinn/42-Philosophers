@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stop.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/17 15:25:08 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/17 19:40:24 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-int	invalid_args(void)
+int	invalid_args(char type)
 {
-	printf("Invalid arguments!\n");
-	printf("Try: ./philo 2 200 100 100 || ./philo 2 300 100 100 2\n");
-	return (0);
-}
-
-int	invalid_values(void)
-{
-	printf("Invalid values!\nOnly numbers above 0 are allowed.\n");
+	if (type == 'q')
+	{
+		printf("Invalid arguments!\n");
+		printf("Try: ./philo 2 200 100 100 || ./philo 2 300 100 100 2\n");
+	}
+	else if (type == 'v')
+		printf("Invalid values!\nOnly numbers above 0 are allowed.\n");
 	return (0);
 }
 
@@ -71,23 +70,23 @@ void	free_all(t_philo *philos, t_data *data)
 		free(data->global->meals);
 }
 
-void	print_status(t_data *data, char type, int id)
+int	smart_usleep(long int timer, t_data *data)
 {
-	pthread_mutex_lock(&data->global->print);
-	pthread_mutex_lock(&data->global->finish);
-	if (!data->global->end)
+	long int	start;
+	long int	end;
+
+	start = get_current_time();
+	end = start + timer;
+	while (end >= get_current_time())
 	{
-		if (type == 't')
-			printf("%lims: %i is thinking\n", get_current_time(), id);
-		else if (type == 'f')
-			printf("%lims: %i has taken a fork\n", get_current_time(), id);
-		else if (type == 'e')
-			printf("%lims: %i is eating\n", get_current_time(), id);
-		else if (type == 's')
-			printf("%lims: %i is sleeping\n", get_current_time(), id);
-		else if (type == 'd')
-			printf("%lims: %i died\n", get_current_time(), id);
+		pthread_mutex_lock(&data->global->finish);
+		if (data->global->end)
+		{
+			pthread_mutex_unlock(&data->global->finish);
+			return (0);
+		}
+		pthread_mutex_unlock(&data->global->finish);
+		usleep(100);
 	}
-	pthread_mutex_unlock(&data->global->finish);
-	pthread_mutex_unlock(&data->global->print);
+	return (1);
 }

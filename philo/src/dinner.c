@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/09 17:40:04 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/11/17 21:31:26 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -42,10 +42,10 @@ void	*dinner(void *cast)
 
 int	take_forks(t_data *data)
 {
-	int	handled;
+	int	in_hand;
 
-	handled = 0;
-	while (handled < 2)
+	in_hand = 0;
+	while (in_hand < 2)
 	{
 		pthread_mutex_lock(&data->global->finish);
 		if (data->global->end)
@@ -54,44 +54,7 @@ int	take_forks(t_data *data)
 			return (0);
 		}
 		pthread_mutex_unlock(&data->global->finish);
-		if (data->id + 1 == data->global->guests)
-		{
-			pthread_mutex_lock(&data->global->m_forks[0]);
-			if (!data->global->forks[0])
-			{
-				print_status(data, 'f', data->id);
-				handled++;
-				data->global->forks[0] = 1;
-			}
-			pthread_mutex_unlock(&data->global->m_forks[0]);
-			pthread_mutex_lock(&data->global->m_forks[data->id]);
-			if (!data->global->forks[data->id])
-			{
-				print_status(data, 'f', data->id);
-				handled++;
-				data->global->forks[data->id] = 1;
-			}
-			pthread_mutex_unlock(&data->global->m_forks[data->id]);
-		}
-		else
-		{
-			pthread_mutex_lock(&data->global->m_forks[data->id]);
-			if (!data->global->forks[data->id])
-			{
-				print_status(data, 'f', data->id);
-				handled++;
-				data->global->forks[data->id] = 1;
-			}
-			pthread_mutex_unlock(&data->global->m_forks[data->id]);
-			pthread_mutex_lock(&data->global->m_forks[data->id + 1]);
-			if (!data->global->forks[data->id + 1])
-			{
-				print_status(data, 'f', data->id);
-				handled++;
-				data->global->forks[data->id + 1] = 1;
-			}
-			pthread_mutex_unlock(&data->global->m_forks[data->id + 1]);
-		}
+		which_forks(data, &in_hand);
 	}
 	return (1);
 }
@@ -133,26 +96,5 @@ int	eat(t_data *data)
 	pthread_mutex_unlock(&data->global->meal_access[data->id]);
 	if (!smart_usleep(data->time_to_eat, data))
 		return (0);
-	return (1);
-}
-
-int	smart_usleep(long int timer, t_data *data)
-{
-	long int	start;
-	long int	end;
-
-	start = get_current_time();
-	end = start + timer;
-	while (end >= get_current_time())
-	{
-		pthread_mutex_lock(&data->global->finish);
-		if (data->global->end)
-		{
-			pthread_mutex_unlock(&data->global->finish);
-			return (0);
-		}
-		pthread_mutex_unlock(&data->global->finish);
-		usleep(100);
-	}
 	return (1);
 }

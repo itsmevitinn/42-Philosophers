@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/08 18:04:17 by vsergio          ###   ########.fr       */
+/*   Updated: 2022/11/17 21:18:28 by Vitor            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_global
 typedef struct s_data
 {
 	int					id;
+	int					next_fork;
 	t_global			*global;
 	long int			time_to_die;
 	long int			time_to_eat;
@@ -52,8 +53,7 @@ typedef struct s_philo
 long int	get_current_time(void);
 long int	ft_atoi(char *str);
 long int	exit_atoi(void);
-int			invalid_args(void);
-int			invalid_values(void);
+int			invalid_args(char type);
 int			check_values(t_data *data);
 int			check_atoi_numbers(char *string);
 void		print_status(t_data *data, char type, int id);
@@ -74,5 +74,8 @@ int			smart_usleep(long int timer, t_data *data);
 void		free_all(t_philo *philos, t_data *data);
 void		free_data(t_data *data);
 void		destroy_mutexes(t_data *data);
+void		*ft_calloc(size_t count, size_t size);
+void		ft_bzero(void *s, size_t n);
+void		which_forks(t_data *data, int *in_hand);
 
 #endif
