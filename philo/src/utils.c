@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:09:09 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/17 19:40:24 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/12/13 11:31:11 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	smart_usleep(long int timer, t_data *data)
 			return (0);
 		}
 		pthread_mutex_unlock(&data->global->finish);
-		usleep(100);
+		usleep(200);
 	}
 	return (1);
 }

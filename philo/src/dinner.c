@@ -6,7 +6,7 @@
 /*   By: vsergio <vsergio@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 18:04:41 by vsergio           #+#    #+#             */
-/*   Updated: 2022/11/17 21:31:26 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/12/13 11:32:06 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -16,6 +16,7 @@ void	*dinner(void *cast)
 	t_data	*data;
 
 	data = cast;
+	data->start_time = get_current_time();
 	pthread_mutex_lock(&data->global->meal_access[data->id]);
 	data->global->lst_meal[data->id] = get_current_time();
 	pthread_mutex_unlock(&data->global->meal_access[data->id]);
@@ -55,6 +56,7 @@ int	take_forks(t_data *data)
 		}
 		pthread_mutex_unlock(&data->global->finish);
 		which_forks(data, &in_hand);
+		usleep(200);
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 23:08:40 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/17 21:18:28 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/12/13 11:32:18 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_global
 typedef struct s_data
 {
 	int					id;
+	long int			start_time;
 	int					next_fork;
 	t_global			*global;
 	long int			time_to_die;

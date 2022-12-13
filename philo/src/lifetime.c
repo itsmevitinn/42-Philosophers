@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:49:55 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/17 21:31:22 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/12/13 11:32:38 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -17,6 +17,7 @@ void	*lifetime(void *data)
 	int			i;
 
 	cast = data;
+	cast->start_time = get_current_time();
 	while (42)
 	{
 		pthread_mutex_lock(&cast->global->finish);

@@ -6,7 +6,7 @@
 /*   By: Vitor <vsergio@student.42.rio>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 19:25:33 by Vitor             #+#    #+#             */
-/*   Updated: 2022/11/17 19:36:58 by Vitor            ###   ########.fr       */
+/*   Updated: 2022/12/13 11:33:35 by vsergio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../include/philosophers.h"
@@ -74,15 +74,15 @@ void	print_status(t_data *data, char type, int id)
 	if (!data->global->end)
 	{
 		if (type == 't')
-			printf("%lims: %i is thinking\n", get_current_time(), id);
+			printf("%lims: %i is thinking\n", (get_current_time() - data->start_time), id);
 		else if (type == 'f')
-			printf("%lims: %i has taken a fork\n", get_current_time(), id);
+			printf("%lims: %i has taken a fork\n", (get_current_time() - data->start_time), id);
 		else if (type == 'e')
-			printf("%lims: %i is eating\n", get_current_time(), id);
+			printf("%lims: %i is eating\n", (get_current_time() - data->start_time), id);
 		else if (type == 's')
-			printf("%lims: %i is sleeping\n", get_current_time(), id);
+			printf("%lims: %i is sleeping\n", (get_current_time() - data->start_time), id);
 		else if (type == 'd')
-			printf("%lims: %i died\n", get_current_time(), id);
+			printf("%lims: %i died\n", (get_current_time() - data->start_time), id);
 	}
 	pthread_mutex_unlock(&data->global->finish);
 	pthread_mutex_unlock(&data->global->print);
